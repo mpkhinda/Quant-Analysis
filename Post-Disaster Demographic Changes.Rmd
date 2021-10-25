@@ -1,0 +1,22 @@
+---
+title: "Post-Disaster Demographic Changes"
+author: "Matt Khinda, Jeb Polstein, Slide Kelly"
+date: "10/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load packages, include = FALSE}
+library(tidyverse)
+library(tidycensus)
+library(readxl)
+library(knitr)
+```
+
+```{r plot 1, echo=FALSE}
+plot(pressure)
+```
+
