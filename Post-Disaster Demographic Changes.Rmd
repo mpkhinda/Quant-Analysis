@@ -15,7 +15,7 @@ How well do demographic factors predict post-hurricane Sandy displacement? Which
 
 ##Prior Research
 
-Faber (2015) finds that flood risk in New York City during Hurricane Sandy varied by race, poverty, and age. Black people were more likely than those of other races to live in areas that flooded, while Latinx people were less likely to live in areas that flooded. Poverty rates were higher in areas that flooded than those that did not. 
+Faber (2015) finds that flood risk in New York City during Hurricane Sandy varied by race and poverty. Black people were more likely than those of other races to live in areas that flooded, Latinx people were less likely to live in areas that flooded, and poverty rates were higher in areas that flooded than those that did not. Fussell and Harris (2014), studying displacement in New Orleans after Hurricane Katrina, find that renters were more likely to be displaced than homeowners. 
 
 
 ##Data Sources
