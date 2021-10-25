@@ -11,8 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ##Research Question  
 
-Research question goes right here
-
+How well do demographic factors predict post-hurricane Sandy displacement? Which factors are most strongly correlated with displacement?  
 
 ##Prior Research
 
