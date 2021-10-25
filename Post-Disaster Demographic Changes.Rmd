@@ -14,9 +14,11 @@ library(tidyverse)
 library(tidycensus)
 library(readxl)
 library(knitr)
+library(ggplot2)
 ```
 
-```{r plot 1, echo=FALSE}
-plot(pressure)
+```{r explore ACS data, include=FALSE}
+v19 <- load_variables(2019, "acs5", cache = TRUE)
+View(v19)
 ```
 
