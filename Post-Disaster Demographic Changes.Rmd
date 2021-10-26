@@ -30,6 +30,10 @@ Geographic Mobility by Housing Tenure (Categorical - ACS: B07013)
 Median Monthly Gross Rent (Continuous - ACS: B25064_001)
 Median Selected Monthly Owner Costs (Continuous - ACS: B25088_001)
 
+The sample population is people in all census tracts within the following counties, which were highly affected by Sandy:
+
+Ocean (NJ), Monmouth (NJ), Middlesex (NJ), Union (NJ), Essex (NJ), Hudson (NJ), Bergen (NJ), Westchester (NY), Rockland (NY), Bronx (NY), New York (NY), Kings(NY), Queens (NY), Richmond (NY), Nassau (NY), Suffolk (NY), Fairfield (CT), New Haven (CT)
+
 ##Load Data
 ```{r load packages}
 library(tidyverse)
