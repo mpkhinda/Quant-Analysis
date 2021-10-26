@@ -8,39 +8,39 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-##Research Question  
+  
+### Research Question  
 
 How well do demographic factors predict post-hurricane Sandy displacement? Which factors are most strongly correlated with displacement?  
 
-##Prior Research
+### Prior Research  
 
 Faber (2015) finds that flood risk in New York City during Hurricane Sandy varied by race and poverty. Black people were more likely than those of other races to live in areas that flooded, Latinx people were less likely to live in areas that flooded, and poverty rates were higher in areas that flooded than those that did not. Fussell and Harris (2014), studying displacement in New Orleans after Hurricane Katrina, find that renters were more likely to be displaced than homeowners. 
 
 
-##Data Sources
+### Data Sources  
 
 Our dataset will include the following American Community Survey 5-year estimate variables for years ending in 2011-2016:
 
-Geographic Mobility by Age (Continuous variable - ACS: B07001)
-Geographic Mobility by Race (Continuous variable - ACS: B07004A, B07004B, B07004C, B07004D, B07004E)
-Geographic Mobility by Hispanic / Non-Hispanic (Continuous variable - ACS: B07004I)
-Geographic Mobility by Income (Continuous Variable - ACS: B07010)
-Geographic Mobility by Housing Tenure (Continuous - ACS: B07013)
-Median Monthly Gross Rent (Continuous - ACS: B25064_001)
-Median Selected Monthly Owner Costs (Continuous - ACS: B25088_001)
-County (Categorical - ACS)
-Location in 100-year Floodplain (Categorical - FEMA flood maps)*
-Flooded in Superstorm Sandy (Categorical - TBD)*
-
+Geographic Mobility by Age (Continuous variable - ACS: B07001)  
+Geographic Mobility by Race (Continuous variable - ACS: B07004A, B07004B, B07004C, B07004D, B07004E)  
+Geographic Mobility by Hispanic / Non-Hispanic (Continuous variable - ACS: B07004I)  
+Geographic Mobility by Income (Continuous Variable - ACS: B07010)  
+Geographic Mobility by Housing Tenure (Continuous - ACS: B07013)  
+Median Monthly Gross Rent (Continuous - ACS: B25064_001)  
+Median Selected Monthly Owner Costs (Continuous - ACS: B25088_001)  
+County (Categorical - ACS)  
+Location in 100-year Floodplain (Categorical - FEMA flood maps)*  
+Flooded in Superstorm Sandy (Categorical - TBD)*  
+  
 *Floodplain location data and Sandy flooding data has not yet been worked out, though the anticipated workflow is to import a shapefile and use st_intersects() with the census tracts to return a Boolean True/False variable. Shapefiles are expected to be pulled from FEMA flood maps. Superstorm Sandy data has been hard to find, but we found one dataset from NYC at https://data.cityofnewyork.us/Environment/Sandy-Inundation-Zone/uyj8-7rv5 and are hoping to find others by state or county. Any advice or help on this workflow would be appreciated.
 
 The sample population is people in all census tracts within the following counties, which were highly affected by Sandy:
 
 Ocean (NJ), Monmouth (NJ), Middlesex (NJ), Union (NJ), Essex (NJ), Hudson (NJ), Bergen (NJ), Westchester (NY), Rockland (NY), Bronx (NY), New York (NY), Kings (NY), Queens (NY), Richmond (NY), Nassau (NY), Suffolk (NY), Fairfield (CT), New Haven (CT)
 
-##Load Data
-```{r load packages}
+## Load Data  
+```{r load packages, results = 'hide', message=FALSE}
 library(tidyverse)
 library(tidycensus)
 library(readxl)
@@ -56,7 +56,7 @@ v19 <- load_variables(2019, "acs5", cache = TRUE)
 View(v19)
 ```
 
-```{r load ACS data}
+```{r load ACS data, results = 'hide', message=FALSE}
 #load NY 2011 data
 ny_acs_2011 <- get_acs(geography = "tract", 
                        county = c("Queens", 
@@ -179,15 +179,20 @@ full_acs_2011 <- full_acs_2011 %>%
 
 ```
 
-```{r}
+```{r plot, include = FALSE}
 #plot to test that correct counties are coming through
 ggplot(full_acs_2011)+
   annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight") +
   geom_sf(fill = NA, color = "black")+
   theme_void()
 ```
+```{r}
+kable(head(full_acs_2011))
+```
 
-##References
+The dataset includes 4461 census tracts.
+
+### References  
 
 Faber, Jacob William. “Superstorm Sandy and the Demographics of Flood Risk in New York City.” *Human Ecology* 43, no. 3 (2015): 363–78. http://www.jstor.org/stable/24762762.
 
