@@ -20,7 +20,15 @@ Faber (2015) finds that flood risk in New York City during Hurricane Sandy varie
 
 ##Data Sources
 
-a
+Our dataset will include the following American Community Survey 5-year estimate variables for years ending in 2011-2016:
+
+Geographic Mobility by Age (Categorical variable - ACS: B07001)
+Geographic Mobility by Race (Categorical variable - ACS: B07004A, B07004B, B07004C, B07004D, B07004E)
+Geographic Mobility by Hispanic / Non-Hispanic (Categorical variable - ACS: B07004I)
+Geographic Mobility by Income (Continuous Variable - ACS: B07010)
+Geographic Mobility by Housing Tenure (Categorical - ACS: B07013)
+Median Monthly Gross Rent (Continuous - ACS: B25064_001)
+Median Selected Monthly Owner Costs (Continuous - ACS: B25088_001)
 
 ##Load Data
 ```{r load packages}
