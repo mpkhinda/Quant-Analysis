@@ -22,17 +22,22 @@ Faber (2015) finds that flood risk in New York City during Hurricane Sandy varie
 
 Our dataset will include the following American Community Survey 5-year estimate variables for years ending in 2011-2016:
 
-Geographic Mobility by Age (Categorical variable - ACS: B07001)
-Geographic Mobility by Race (Categorical variable - ACS: B07004A, B07004B, B07004C, B07004D, B07004E)
-Geographic Mobility by Hispanic / Non-Hispanic (Categorical variable - ACS: B07004I)
+Geographic Mobility by Age (Continuous variable - ACS: B07001)
+Geographic Mobility by Race (Continuous variable - ACS: B07004A, B07004B, B07004C, B07004D, B07004E)
+Geographic Mobility by Hispanic / Non-Hispanic (Continuous variable - ACS: B07004I)
 Geographic Mobility by Income (Continuous Variable - ACS: B07010)
-Geographic Mobility by Housing Tenure (Categorical - ACS: B07013)
+Geographic Mobility by Housing Tenure (Continuous - ACS: B07013)
 Median Monthly Gross Rent (Continuous - ACS: B25064_001)
 Median Selected Monthly Owner Costs (Continuous - ACS: B25088_001)
+County (Categorical - ACS)
+Location in 100-year Floodplain (Categorical - FEMA flood maps)*
+Flooded in Superstorm Sandy (Categorical - TBD)*
+
+*Floodplain location data and Sandy flooding data has not yet been worked out, though the anticipated workflow is to import a shapefile and use st_intersects() with the census tracts to return a Boolean True/False variable. Shapefiles are expected to be pulled from FEMA flood maps. Superstorm Sandy data has been hard to find, but we found one dataset from NYC at https://data.cityofnewyork.us/Environment/Sandy-Inundation-Zone/uyj8-7rv5 and are hoping to find others by state or county. Any advice or help on this workflow would be appreciated.
 
 The sample population is people in all census tracts within the following counties, which were highly affected by Sandy:
 
-Ocean (NJ), Monmouth (NJ), Middlesex (NJ), Union (NJ), Essex (NJ), Hudson (NJ), Bergen (NJ), Westchester (NY), Rockland (NY), Bronx (NY), New York (NY), Kings(NY), Queens (NY), Richmond (NY), Nassau (NY), Suffolk (NY), Fairfield (CT), New Haven (CT)
+Ocean (NJ), Monmouth (NJ), Middlesex (NJ), Union (NJ), Essex (NJ), Hudson (NJ), Bergen (NJ), Westchester (NY), Rockland (NY), Bronx (NY), New York (NY), Kings (NY), Queens (NY), Richmond (NY), Nassau (NY), Suffolk (NY), Fairfield (CT), New Haven (CT)
 
 ##Load Data
 ```{r load packages}
@@ -41,16 +46,145 @@ library(tidycensus)
 library(readxl)
 library(knitr)
 library(ggplot2)
+library(sf)
+library(ggspatial)
 ```
 
 ```{r explore ACS data, include=FALSE}
+#only used for browsing acs data variables and finding codes
 v19 <- load_variables(2019, "acs5", cache = TRUE)
 View(v19)
 ```
 
 ```{r load ACS data}
+#load NY 2011 data
+ny_acs_2011 <- get_acs(geography = "tract", 
+                       county = c("Queens", 
+                                  "Westchester", 
+                                  "Rockland", 
+                                  "Bronx", 
+                                  "New York", 
+                                  "Kings", 
+                                  "Nassau",
+                                  "Suffolk"), 
+                        state = "NY",
+                        year = 2011, survey = "acs5",
+                        variables = c(
+                             total_pop = "B01003_001",
+                             total_geo_mobility = "B07001_001",
+                             
+                             black_geo_mobility = "B07004B_001",
+                             white_geo_mobility = "B07004A_001",
+                             native_geo_mobility = "B07004C_001",
+                             asian_geo_mobility = "B07004D_001",
+                             hawaiian_geo_mobility = "B07004E_001",
+                             hispanic_geo_mobility = "B07004I_001",
+                             
+                             income0_geo_mobility = "B07010_002",
+                             income1to10k_geo_mobility = "B07010_004",
+                             income10kto15k_geo_mobility = "B07010_005",
+                             income15kto25k_geo_mobility = "B07010_006",
+                             income25kto35k_geo_mobility = "B07010_007",
+                             income35kto50k_geo_mobility = "B07010_008",
+                             income50kto65k_geo_mobility = "B07010_009",
+                             income65kto75k_geo_mobility = "B07010_010",
+                             income75kplus_geo_mobility = "B07010_011",
+                             
+                             owner_geo_mobility = "B07013_002",
+                             renter_geo_mobility = "B07013_003",
+                             
+                             med_gross_rent = "B25063_001", 
+                             med_owner_cost = "B25088_001"),
+                        output = "wide", geometry = TRUE)
 
+#load NJ 2011 data
+nj_acs_2011 <- get_acs(geography = "tract", 
+                       county = c("Ocean", 
+                                  "Union", 
+                                  "Essex", 
+                                  "Bergen", 
+                                  "Hudson", 
+                                  "Middlesex", 
+                                  "Monmouth"), 
+                        state = "NJ",
+                        year = 2011, survey = "acs5",
+                        variables = c(
+                             total_pop = "B01003_001",
+                             total_geo_mobility = "B07001_001",
+                             
+                             black_geo_mobility = "B07004B_001",
+                             white_geo_mobility = "B07004A_001",
+                             native_geo_mobility = "B07004C_001",
+                             asian_geo_mobility = "B07004D_001",
+                             hawaiian_geo_mobility = "B07004E_001",
+                             hispanic_geo_mobility = "B07004I_001",
+                             
+                             income0_geo_mobility = "B07010_002",
+                             income1to10k_geo_mobility = "B07010_004",
+                             income10kto15k_geo_mobility = "B07010_005",
+                             income15kto25k_geo_mobility = "B07010_006",
+                             income25kto35k_geo_mobility = "B07010_007",
+                             income35kto50k_geo_mobility = "B07010_008",
+                             income50kto65k_geo_mobility = "B07010_009",
+                             income65kto75k_geo_mobility = "B07010_010",
+                             income75kplus_geo_mobility = "B07010_011",
+                             
+                             owner_geo_mobility = "B07013_002",
+                             renter_geo_mobility = "B07013_003",
+                             
+                             med_gross_rent = "B25063_001", 
+                             med_owner_cost = "B25088_001"),
+                        output = "wide", geometry = TRUE)
 
+#load CT 2011 data
+ct_acs_2011 <- get_acs(geography = "tract", 
+                       county = c("New Haven", 
+                                  "Fairfield"), 
+                        state = "CT",
+                        year = 2011, survey = "acs5",
+                        variables = c(
+                             total_pop = "B01003_001",
+                             total_geo_mobility = "B07001_001",
+                             
+                             black_geo_mobility = "B07004B_001",
+                             white_geo_mobility = "B07004A_001",
+                             native_geo_mobility = "B07004C_001",
+                             asian_geo_mobility = "B07004D_001",
+                             hawaiian_geo_mobility = "B07004E_001",
+                             hispanic_geo_mobility = "B07004I_001",
+                             
+                             income0_geo_mobility = "B07010_002",
+                             income1to10k_geo_mobility = "B07010_004",
+                             income10kto15k_geo_mobility = "B07010_005",
+                             income15kto25k_geo_mobility = "B07010_006",
+                             income25kto35k_geo_mobility = "B07010_007",
+                             income35kto50k_geo_mobility = "B07010_008",
+                             income50kto65k_geo_mobility = "B07010_009",
+                             income65kto75k_geo_mobility = "B07010_010",
+                             income75kplus_geo_mobility = "B07010_011",
+                             
+                             owner_geo_mobility = "B07013_002",
+                             renter_geo_mobility = "B07013_003",
+                             
+                             med_gross_rent = "B25063_001", 
+                             med_owner_cost = "B25088_001"),
+                        output = "wide", geometry = TRUE)
+
+#combine all 2011 data
+full_acs_2011 <- rbind(ny_acs_2011,nj_acs_2011,ct_acs_2011)
+
+#create new categorical variables
+full_acs_2011 <- full_acs_2011 %>%
+  mutate(county = sapply(strsplit(NAME,", "), `[`, 2))
+
+```
+
+```{r}
+#plot to test that correct counties are coming through
+ggplot(full_acs_2011)+
+  annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight") +
+  geom_sf(fill = NA, color = "black")+
+  theme_void()
 ```
 
 ##References
