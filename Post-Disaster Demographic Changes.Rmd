@@ -177,6 +177,10 @@ full_acs_2011 <- rbind(ny_acs_2011,nj_acs_2011,ct_acs_2011)
 full_acs_2011 <- full_acs_2011 %>%
   mutate(county = sapply(strsplit(NAME,", "), `[`, 2))
 
+#filter out tracts with 0 population
+full_acs_2011 <- full_acs_2011 %>%
+  filter(total_popE != 0)
+
 ```
 
 ```{r plot, include = FALSE}
