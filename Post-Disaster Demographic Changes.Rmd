@@ -62,6 +62,7 @@ ny_acs_2011 <- get_acs(geography = "tract",
                        county = c("Queens", 
                                   "Westchester", 
                                   "Rockland", 
+                                  "Richmond", 
                                   "Bronx", 
                                   "New York", 
                                   "Kings", 
@@ -194,7 +195,7 @@ ggplot(full_acs_2011)+
 kable(head(full_acs_2011))
 ```
 
-The dataset includes 4461 census tracts.
+The dataset includes 4515 census tracts.
 
 ### References  
 
