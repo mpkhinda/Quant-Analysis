@@ -81,7 +81,7 @@ ny_acs_2011 <- get_acs(geography = "tract",
                              native_pop_2011 = "B02001_004",
                              asian_pop_2011 = "B02001_005",
                              hawaiian_pop_2011 = "B02001_006",
-                             hispanic_pop_2011 = "B03001_001",
+                             hispanic_pop_2011 = "B03001_003",
                              
                              med_income_2011 = "B19013_001",
                              med_propvalue_2011 = "B25077_001",
@@ -130,7 +130,7 @@ nj_acs_2011 <- get_acs(geography = "tract",
                              native_pop_2011 = "B02001_004",
                              asian_pop_2011 = "B02001_005",
                              hawaiian_pop_2011 = "B02001_006",
-                             hispanic_pop_2011 = "B03001_001",
+                             hispanic_pop_2011 = "B03001_003",
                              
                              med_income_2011 = "B19013_001",
                              med_propvalue_2011 = "B25077_001",
@@ -172,7 +172,7 @@ ct_acs_2011 <- get_acs(geography = "tract",
                              native_pop_2011 = "B02001_004",
                              asian_pop_2011 = "B02001_005",
                              hawaiian_pop_2011 = "B02001_006",
-                             hispanic_pop_2011 = "B03001_001",
+                             hispanic_pop_2011 = "B03001_003",
                              
                              med_income_2011 = "B19013_001",
                              med_propvalue_2011 = "B25077_001",
@@ -276,6 +276,72 @@ kable(head(full_acs))
 ```
 
 The dataset includes 4515 census tracts.
+
+### DESCRIPTIVE STATISTICS
+
+```{r}
+pct_pop_change_t_test <- t.test(full_acs$pct_pop_changeE)
+pct_black_pop_2011_t_test <- t.test(full_acs$pct_black_pop_2011E)
+pct_white_pop_2011_t_test <- t.test(full_acs$pct_white_pop_2011E)
+pct_asian_pop_2011_t_test <- t.test(full_acs$pct_asian_pop_2011E)
+pct_hispanic_pop_2011_t_test <- t.test(full_acs$pct_hispanic_pop_2011E)
+pct_renter_2011_t_test <- t.test(full_acs$pct_renter_2011E)
+med_income_2011_t_test <- t.test(full_acs$med_income_2011E)
+```
+
+```{r}
+pct_pop_change_quartiles <- quantile(full_acs$pct_pop_changeE, na.rm = TRUE)
+pct_black_pop_2011_quartiles <- quantile(full_acs$pct_black_pop_2011E, na.rm = TRUE)
+pct_white_pop_2011_quartiles <- quantile(full_acs$pct_white_pop_2011E, na.rm = TRUE)
+pct_asian_pop_2011_quartiles <- quantile(full_acs$pct_asian_pop_2011E, na.rm = TRUE)
+pct_hispanic_pop_2011_quartiles <- quantile(full_acs$pct_hispanic_pop_2011E, na.rm = TRUE)
+pct_renter_2011_quartiles <- quantile(full_acs$pct_renter_2011E, na.rm = TRUE)
+med_income_2011_quartiles <- quantile(full_acs$med_income_2011E, na.rm = TRUE)
+```
+
+```{r}
+pct_pop_change_st_dev <- sd(full_acs$pct_pop_changeE, na.rm = TRUE)
+pct_black_pop_2011_st_dev <- sd(full_acs$pct_black_pop_2011E, na.rm = TRUE)
+pct_white_pop_2011_st_dev <- sd(full_acs$pct_white_pop_2011E, na.rm = TRUE)
+pct_asian_pop_2011_st_dev <- sd(full_acs$pct_asian_pop_2011E, na.rm = TRUE)
+pct_hispanic_pop_2011_st_dev <- sd(full_acs$pct_hispanic_pop_2011E, na.rm = TRUE)
+pct_renter_2011_st_dev <- sd(full_acs$pct_renter_2011, na.rm = TRUE)
+med_income_2011_st_dev <- sd(full_acs$med_income_2011E, na.rm = TRUE)
+```
+
+```{r}
+pct_pop_change_hist <- ggplot(full_acs) +
+  geom_histogram(aes(x = pct_pop_changeE),
+                 bins = 30)
+
+pct_black_pop_2011_hist <- ggplot(full_acs) +
+  geom_histogram(aes(x = pct_black_pop_2011E),
+                 bins = 30)
+
+pct_white_pop_2011_hist <- ggplot(full_acs) +
+  geom_histogram(aes(x = pct_white_pop_2011E),
+                 bins = 30)
+
+pct_asian_pop_2011_hist <- ggplot(full_acs) +
+  geom_histogram(aes(x = pct_asian_pop_2011E),
+                 bins = 30)
+
+pct_hispanic_pop_2011_hist <- ggplot(full_acs) +
+  geom_histogram(aes(x = pct_hispanic_pop_2011E),
+                 bins = 30)
+
+pct_renter_2011_hist <- ggplot(full_acs) +
+  geom_histogram(aes(x = pct_renter_2011E),
+                 bins = 30)
+
+med_income_2011_hist <- ggplot(full_acs) +
+  geom_histogram(aes(x = med_incomeE),
+                 bins = 30)
+
+
+
+pct_pop_change_hist
+```
 
 ### References  
 
