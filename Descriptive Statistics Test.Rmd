@@ -122,6 +122,29 @@ cont_summary <- tibble(
 
 kable(cont_summary, digits = 0)
 ```
+##CATEGORICAL VARIABLES
+
+```{r}
+nassau_cat <- t.test(full_acs_2011$county == "Nassau")
+suffolk_cat <- t.test(full_acs_2011$county == "Suffolk")
+```
+
+```{r}
+cat_summary_nass_suff <- tibble(`County` = 
+                              c("Nassau",
+                                "Suffolk"),
+                            `Sample proportion` = 
+                              c(nassau_cat$estimate,
+                                suffolk_cat$estimate),
+                            `95-percent confidence - low` = 
+                              c(nassau_cat$conf.int[1] ,
+                                suffolk_cat$conf.int[1]),
+                            `95-percent confidence - high` = 
+                              c(nassau_cat$conf.int[2],
+                                suffolk_cat$conf.int[2]))
+
+kable(cat_summary_nass_suff, digits = 0)
+```
 
 
 
