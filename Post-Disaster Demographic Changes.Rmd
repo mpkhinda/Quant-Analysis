@@ -411,6 +411,7 @@ cont_summary <- tibble(
              pct_asian_pop_2011_quartiles[3],
              pct_hispanic_pop_2011_quartiles[3],
              pct_renter_2011_quartiles[3],
+             med_income_2011_quartiles[3],
              med_propvalue_2011_quartiles[3]),
   
   `Interquartile range` = c(pct_pop_change_quartiles[4] - pct_pop_change_quartiles[2],
@@ -418,7 +419,8 @@ cont_summary <- tibble(
                             pct_white_pop_2011_quartiles[4] - pct_white_pop_2011_quartiles[2],
                             pct_asian_pop_2011_quartiles[4] - pct_asian_pop_2011_quartiles[2],
                             pct_hispanic_pop_2011_quartiles[4] -  pct_hispanic_pop_2011_quartiles[2],
-                            pct_renter_2011_quartiles[4] - pct_renter_2011_quartiles[2], 
+                            pct_renter_2011_quartiles[4] - pct_renter_2011_quartiles[2],
+                            med_income_2011_quartiles[4] - med_income_2011_quartiles[2],
                             med_propvalue_2011_quartiles[4] - med_propvalue_2011_quartiles[2]),
                      
   `Standard deviation` = c(pct_pop_change_st_dev,
