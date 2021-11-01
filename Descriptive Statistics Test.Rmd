@@ -1,0 +1,127 @@
+---
+title: "Descriptive Statistics Test"
+author: "Jeb Polstein"
+date: "11/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Data  
+```{r load packages, results = 'hide', message=FALSE}
+library(tidyverse)
+library(tidycensus)
+library(readxl)
+library(knitr)
+library(ggplot2)
+library(sf)
+library(ggspatial)
+```
+
+```{r explore ACS data, include=FALSE}
+#only used for browsing acs data variables and finding codes
+v19 <- load_variables(2019, "acs5", cache = TRUE)
+View(v19)
+```
+
+```{r load ACS data, results = 'hide', message=FALSE}
+#load NY 2011 data
+ny_acs_2011 <- get_acs(geography = "tract", 
+                       county = c("Queens", 
+                                  "Westchester", 
+                                  "Rockland", 
+                                  "Richmond", 
+                                  "Bronx", 
+                                  "New York", 
+                                  "Kings", 
+                                  "Nassau",
+                                  "Suffolk"), 
+                        state = "NY",
+                        year = 2011, survey = "acs5",
+                        variables = c(
+                             total_pop = "B01003_001"),
+                             output = "wide", geometry = TRUE)
+
+#load NJ 2011 data
+nj_acs_2011 <- get_acs(geography = "tract", 
+                       county = c("Ocean", 
+                                  "Union", 
+                                  "Essex", 
+                                  "Bergen", 
+                                  "Hudson", 
+                                  "Middlesex", 
+                                  "Monmouth"), 
+                        state = "NJ",
+                         year = 2011, survey = "acs5",
+                        variables = c(
+                             total_pop = "B01003_001"),
+                             output = "wide", geometry = TRUE)
+
+#load CT 2011 data
+ct_acs_2011 <- get_acs(geography = "tract", 
+                       county = c("New Haven", 
+                                  "Fairfield"), 
+                        state = "CT",
+                         year = 2011, survey = "acs5",
+                        variables = c(
+                             total_pop = "B01003_001"),
+                             output = "wide", geometry = TRUE)
+
+#combine all 2011 data
+full_acs_2011 <- rbind(ny_acs_2011,nj_acs_2011,ct_acs_2011)
+
+#create new categorical variables
+full_acs_2011 <- full_acs_2011 %>%
+  mutate(county = sapply(strsplit(NAME,", "), `[`, 2))
+
+#filter out tracts with 0 population
+full_acs_2011 <- full_acs_2011 %>%
+  filter(total_popE != 0)
+
+full_acs_2011
+```
+```{r}
+total_pop_t_test <- t.test(full_acs_2011$total_popE)
+```
+
+```{r}
+total_pop_quartiles <- quantile(full_acs_2011$total_popE, na.rm = TRUE)
+```
+
+```{r}
+total_pop_st_dev <- sd(full_acs_2011$total_popE, na.rm = TRUE)
+```
+
+```{r}
+total_pop_hist <- ggplot(full_acs_2011) +
+  geom_histogram(aes(x = total_popE),
+                 bins = 30)
+
+total_pop_hist
+```
+
+```{r}
+cont_summary <- tibble(
+  Variable = c("Population"),
+  `Sample mean` = c(total_pop_t_test$estimate
+                  ),
+  `Population mean (95% confidence) - low` = 
+    c(total_pop_t_test$conf.int[1]
+      ),
+  `Population mean (95% confidence) - high` =
+    c(total_pop_t_test$conf.int[2]
+     ),
+  Median = c(total_pop_quartiles[3]
+            ),
+  `Interquartile range` = c(total_pop_quartiles[4] - total_pop_quartiles[2]
+                      ),
+  `Standard deviation` = c(total_pop_st_dev
+                          ))
+
+kable(cont_summary, digits = 0)
+```
+
+
+
