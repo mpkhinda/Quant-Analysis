@@ -52,8 +52,9 @@ library(ggspatial)
 
 ```{r explore ACS data, include=FALSE}
 #only used for browsing acs data variables and finding codes
-v19 <- load_variables(2019, "acs5", cache = TRUE)
-View(v19)
+v11 <- load_variables(2011, "acs5", cache = TRUE)
+View(v11)
+
 ```
 
 ```{r load ACS data, results = 'hide', message=FALSE}
@@ -71,32 +72,42 @@ ny_acs_2011 <- get_acs(geography = "tract",
                         state = "NY",
                         year = 2011, survey = "acs5",
                         variables = c(
-                             total_pop = "B01003_001",
-                             total_geo_mobility = "B07001_001",
+                             total_pop_2011 = "B01003_001",
+
+                             black_pop_2011 = "B02001_003",
+                             white_pop_2011 = "B02001_002",
+                             native_pop_2011 = "B02001_004",
+                             asian_pop_2011 = "B02001_005",
+                             hawaiian_pop_2011 = "B02001_006",
+                             hispanic_pop_2011 = "B03001_001",
                              
-                             black_geo_mobility = "B07004B_001",
-                             white_geo_mobility = "B07004A_001",
-                             native_geo_mobility = "B07004C_001",
-                             asian_geo_mobility = "B07004D_001",
-                             hawaiian_geo_mobility = "B07004E_001",
-                             hispanic_geo_mobility = "B07004I_001",
-                             
-                             income0_geo_mobility = "B07010_002",
-                             income1to10k_geo_mobility = "B07010_004",
-                             income10kto15k_geo_mobility = "B07010_005",
-                             income15kto25k_geo_mobility = "B07010_006",
-                             income25kto35k_geo_mobility = "B07010_007",
-                             income35kto50k_geo_mobility = "B07010_008",
-                             income50kto65k_geo_mobility = "B07010_009",
-                             income65kto75k_geo_mobility = "B07010_010",
-                             income75kplus_geo_mobility = "B07010_011",
-                             
-                             owner_geo_mobility = "B07013_002",
-                             renter_geo_mobility = "B07013_003",
-                             
-                             med_gross_rent = "B25063_001", 
-                             med_owner_cost = "B25088_001"),
+                             med_income_2011 = "B19013_001",
+                             med_propvalue_2011 = "B25077_001",
+                             tot_renter_2011 = "B25003_003"),
                         output = "wide", geometry = TRUE)
+
+#load NY 2013 data
+ny_acs_2013 <- get_acs(geography = "tract", 
+                       county = c("Queens", 
+                                  "Westchester", 
+                                  "Rockland", 
+                                  "Richmond", 
+                                  "Bronx", 
+                                  "New York", 
+                                  "Kings", 
+                                  "Nassau",
+                                  "Suffolk"), 
+                        state = "NY",
+                        year = 2013, survey = "acs5",
+                        variables = c(
+                             total_pop_2013 = "B01003_001"),
+                        output = "wide", geometry = TRUE)
+
+ny_acs_2013 <- ny_acs_2013 %>%
+  select(-GEOID, -NAME)
+
+full_ny <- st_join(x = ny_acs_2011, y = ny_acs_2013)
+
 
 #load NJ 2011 data
 nj_acs_2011 <- get_acs(geography = "tract", 
@@ -109,33 +120,41 @@ nj_acs_2011 <- get_acs(geography = "tract",
                                   "Monmouth"), 
                         state = "NJ",
                         year = 2011, survey = "acs5",
-                        variables = c(
-                             total_pop = "B01003_001",
-                             total_geo_mobility = "B07001_001",
+                         variables = c(
+                             total_pop_2011 = "B01003_001",
+
+                             black_pop_2011 = "B02001_003",
+                             white_pop_2011 = "B02001_002",
+                             native_pop_2011 = "B02001_004",
+                             asian_pop_2011 = "B02001_005",
+                             hawaiian_pop_2011 = "B02001_006",
+                             hispanic_pop_2011 = "B03001_001",
                              
-                             black_geo_mobility = "B07004B_001",
-                             white_geo_mobility = "B07004A_001",
-                             native_geo_mobility = "B07004C_001",
-                             asian_geo_mobility = "B07004D_001",
-                             hawaiian_geo_mobility = "B07004E_001",
-                             hispanic_geo_mobility = "B07004I_001",
-                             
-                             income0_geo_mobility = "B07010_002",
-                             income1to10k_geo_mobility = "B07010_004",
-                             income10kto15k_geo_mobility = "B07010_005",
-                             income15kto25k_geo_mobility = "B07010_006",
-                             income25kto35k_geo_mobility = "B07010_007",
-                             income35kto50k_geo_mobility = "B07010_008",
-                             income50kto65k_geo_mobility = "B07010_009",
-                             income65kto75k_geo_mobility = "B07010_010",
-                             income75kplus_geo_mobility = "B07010_011",
-                             
-                             owner_geo_mobility = "B07013_002",
-                             renter_geo_mobility = "B07013_003",
-                             
-                             med_gross_rent = "B25063_001", 
-                             med_owner_cost = "B25088_001"),
+                             med_income_2011 = "B19013_001",
+                             med_propvalue_2011 = "B25077_001",
+                             tot_renter_2011 = "B25003_003"),
                         output = "wide", geometry = TRUE)
+
+#load NJ 2013 data
+nj_acs_2013 <- get_acs(geography = "tract", 
+                       county = c("Ocean", 
+                                  "Union", 
+                                  "Essex", 
+                                  "Bergen", 
+                                  "Hudson", 
+                                  "Middlesex", 
+                                  "Monmouth"), 
+                        state = "NJ",
+                        year = 2013, survey = "acs5",
+                         variables = c(
+                             total_pop_2013 = "B01003_001"),
+                        output = "wide", geometry = TRUE)
+
+nj_acs_2013 <- nj_acs_2013 %>%
+  select(-GEOID, -NAME)
+
+full_nj <- st_join(x = nj_acs_2011, y = nj_acs_2013)
+
 
 #load CT 2011 data
 ct_acs_2011 <- get_acs(geography = "tract", 
@@ -144,55 +163,61 @@ ct_acs_2011 <- get_acs(geography = "tract",
                         state = "CT",
                         year = 2011, survey = "acs5",
                         variables = c(
-                             total_pop = "B01003_001",
-                             total_geo_mobility = "B07001_001",
+                             total_pop_2011 = "B01003_001",
+
+                             black_pop_2011 = "B02001_003",
+                             white_pop_2011 = "B02001_002",
+                             native_pop_2011 = "B02001_004",
+                             asian_pop_2011 = "B02001_005",
+                             hawaiian_pop_2011 = "B02001_006",
+                             hispanic_pop_2011 = "B03001_001",
                              
-                             black_geo_mobility = "B07004B_001",
-                             white_geo_mobility = "B07004A_001",
-                             native_geo_mobility = "B07004C_001",
-                             asian_geo_mobility = "B07004D_001",
-                             hawaiian_geo_mobility = "B07004E_001",
-                             hispanic_geo_mobility = "B07004I_001",
-                             
-                             income0_geo_mobility = "B07010_002",
-                             income1to10k_geo_mobility = "B07010_004",
-                             income10kto15k_geo_mobility = "B07010_005",
-                             income15kto25k_geo_mobility = "B07010_006",
-                             income25kto35k_geo_mobility = "B07010_007",
-                             income35kto50k_geo_mobility = "B07010_008",
-                             income50kto65k_geo_mobility = "B07010_009",
-                             income65kto75k_geo_mobility = "B07010_010",
-                             income75kplus_geo_mobility = "B07010_011",
-                             
-                             owner_geo_mobility = "B07013_002",
-                             renter_geo_mobility = "B07013_003",
-                             
-                             med_gross_rent = "B25063_001", 
-                             med_owner_cost = "B25088_001"),
+                             med_income_2011 = "B19013_001",
+                             med_propvalue_2011 = "B25077_001",
+                             tot_renter_2011 = "B25003_003"),
                         output = "wide", geometry = TRUE)
 
-#combine all 2011 data
-full_acs_2011 <- rbind(ny_acs_2011,nj_acs_2011,ct_acs_2011)
 
-#create new categorical variables
-full_acs_2011 <- full_acs_2011 %>%
-  mutate(county = sapply(strsplit(NAME,", "), `[`, 2))
+#load CT 2013 data
+ct_acs_2013 <- get_acs(geography = "tract", 
+                       county = c("New Haven", 
+                                  "Fairfield"), 
+                        state = "CT",
+                        year = 2013, survey = "acs5",
+                        variables = c(
+                             total_pop_2013 = "B01003_001"),
+                        output = "wide", geometry = TRUE)
+
+ct_acs_2013 <- ct_acs_2013 %>%
+  select(-GEOID, -NAME)
+
+full_ct <- st_join(x = ct_acs_2011, y = ct_acs_2013)
+
+
+#combine all data
+full_acs <- rbind(full_ny,full_nj,full_ct)
 
 #filter out tracts with 0 population
-full_acs_2011 <- full_acs_2011 %>%
-  filter(total_popE != 0)
+full_acs <- full_acs %>%
+  filter(total_pop_2011E != 0)
+
+#create new variables
+full_acs <- full_acs %>%
+  mutate(county = sapply(strsplit(NAME,", "), `[`, 2))
+
 
 ```
 
 ```{r plot, include = FALSE}
 #plot to test that correct counties are coming through
-ggplot(full_acs_2011)+
+ggplot(full_acs)+
   annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight") +
   geom_sf(fill = NA, color = "black")+
   theme_void()
 ```
+
 ```{r}
-kable(head(full_acs_2011))
+kable(head(full_acs))
 ```
 
 The dataset includes 4515 census tracts.
