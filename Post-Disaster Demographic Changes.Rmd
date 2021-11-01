@@ -48,6 +48,8 @@ library(knitr)
 library(ggplot2)
 library(sf)
 library(ggspatial)
+library(here)
+library(stringr)
 ```
 
 ```{r explore ACS data, include=FALSE}
@@ -104,9 +106,9 @@ ny_acs_2013 <- get_acs(geography = "tract",
                         output = "wide", geometry = TRUE)
 
 ny_acs_2013 <- ny_acs_2013 %>%
-  select(-GEOID, -NAME)
+  st_set_geometry(NULL)
 
-full_ny <- st_join(x = ny_acs_2011, y = ny_acs_2013)
+full_ny <- merge(x = ny_acs_2011, y = ny_acs_2013)
 
 
 #load NJ 2011 data
@@ -151,9 +153,9 @@ nj_acs_2013 <- get_acs(geography = "tract",
                         output = "wide", geometry = TRUE)
 
 nj_acs_2013 <- nj_acs_2013 %>%
-  select(-GEOID, -NAME)
+  st_set_geometry(NULL)
 
-full_nj <- st_join(x = nj_acs_2011, y = nj_acs_2013)
+full_nj <- merge(x = nj_acs_2011, y = nj_acs_2013)
 
 
 #load CT 2011 data
@@ -189,9 +191,9 @@ ct_acs_2013 <- get_acs(geography = "tract",
                         output = "wide", geometry = TRUE)
 
 ct_acs_2013 <- ct_acs_2013 %>%
-  select(-GEOID, -NAME)
+  st_set_geometry(NULL)
 
-full_ct <- st_join(x = ct_acs_2011, y = ct_acs_2013)
+full_ct <- merge(x = ct_acs_2011, y = ct_acs_2013)
 
 
 #combine all data
@@ -203,7 +205,59 @@ full_acs <- full_acs %>%
 
 #create new variables
 full_acs <- full_acs %>%
-  mutate(county = sapply(strsplit(NAME,", "), `[`, 2))
+  mutate(county = sapply(strsplit(NAME,", "), `[`, 2)) %>%
+  mutate(pct_pop_changeE = round(((total_pop_2013E - total_pop_2011E)/total_pop_2011E)*100, 2)) %>%
+  mutate(pct_black_pop_2011E = round((black_pop_2011E/total_pop_2011E)*100, 2)) %>%
+  mutate(pct_white_pop_2011E = round((white_pop_2011E/total_pop_2011E)*100, 2)) %>%
+  mutate(pct_native_pop_2011E = round((native_pop_2011E/total_pop_2011E)*100, 2)) %>%
+  mutate(pct_asian_pop_2011E = round((asian_pop_2011E/total_pop_2011E)*100, 2)) %>%
+  mutate(pct_hawaiian_pop_2011E = round((hawaiian_pop_2011E/total_pop_2011E)*100, 2)) %>%
+  mutate(pct_hispanic_pop_2011E = round((hispanic_pop_2011E/total_pop_2011E)*100, 2)) %>%
+  mutate(pct_renter_2011E = round((tot_renter_2011E/total_pop_2011E)*100, 2)) %>%
+  mutate(tract_area = st_area(geometry)) %>%
+  mutate(pop_density_2011E = round((total_pop_2011E/tract_area)*100, 2))
+
+#read in election data
+ourstates <- c("NY", "NJ", "CT")
+ourcounties <- c( "Queens", 
+                  "Westchester", 
+                  "Rockland", 
+                  "Richmond", 
+                  "Bronx", 
+                  "New York", 
+                  "Kings", 
+                  "Nassau",
+                  "Suffolk",
+                  "Ocean", 
+                  "Union", 
+                  "Essex", 
+                  "Bergen", 
+                  "Hudson", 
+                  "Middlesex", 
+                  "Monmouth",
+                  "New Haven", 
+                  "Fairfield")
+
+election <- read_csv(here("Data", "countypres_2000-2020.csv")) %>%
+  filter(state_po %in% ourstates) %>%
+  mutate(county_name = str_to_title(county_name)) %>%
+  filter(county_name %in% ourcounties) %>%
+  filter(year == 2008) %>%
+  filter(party == "REPUBLICAN") %>%
+  rename(GEOID = county_name) %>%
+  group_by(GEOID) %>%
+  summarize(candidatevotes = sum(candidatevotes),
+            totalvotes = first(totalvotes)) %>%
+  mutate(pct_GOP = candidatevotes / totalvotes) %>%
+  mutate(majority_vote = ifelse(pct_GOP > 0.5, "Republican", "Democrat")) %>%
+  select(GEOID, pct_GOP, majority_vote) %>%
+  mutate(addcounty = "County") %>%
+  mutate(county_name = paste(GEOID, addcounty, sep = " ")) %>%
+  select(county_name, majority_vote)
+
+#adding election data to full acs
+full_acs <- merge(full_acs, election, by.x = "county", by.y = "county_name")
+  
 
 
 ```
@@ -212,7 +266,8 @@ full_acs <- full_acs %>%
 #plot to test that correct counties are coming through
 ggplot(full_acs)+
   annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight") +
-  geom_sf(fill = NA, color = "black")+
+  geom_sf(aes(fill = majority_vote), color = "black")+
+  scale_fill_manual(values = c("blue", "red"))+
   theme_void()
 ```
 
