@@ -287,6 +287,8 @@ pct_asian_pop_2011_t_test <- t.test(full_acs$pct_asian_pop_2011E)
 pct_hispanic_pop_2011_t_test <- t.test(full_acs$pct_hispanic_pop_2011E)
 pct_renter_2011_t_test <- t.test(full_acs$pct_renter_2011E)
 med_income_2011_t_test <- t.test(full_acs$med_income_2011E)
+med_propvalue_2011_t_test <- t.test(full_acs$med_propvalue_2011E)
+#pop_density_2011_t_test <- t.test(full_acs$pop_density_2011E)
 ```
 
 ```{r}
@@ -297,6 +299,8 @@ pct_asian_pop_2011_quartiles <- quantile(full_acs$pct_asian_pop_2011E, na.rm = T
 pct_hispanic_pop_2011_quartiles <- quantile(full_acs$pct_hispanic_pop_2011E, na.rm = TRUE)
 pct_renter_2011_quartiles <- quantile(full_acs$pct_renter_2011E, na.rm = TRUE)
 med_income_2011_quartiles <- quantile(full_acs$med_income_2011E, na.rm = TRUE)
+med_propvalue_2011_quartiles <- quantile(full_acs$med_propvalue_2011E, na.rm = TRUE)
+#pop_density_2011_quartiles <- quantile(full_acs$pop_density_2011E, na.rm = TRUE)
 ```
 
 ```{r}
@@ -307,6 +311,8 @@ pct_asian_pop_2011_st_dev <- sd(full_acs$pct_asian_pop_2011E, na.rm = TRUE)
 pct_hispanic_pop_2011_st_dev <- sd(full_acs$pct_hispanic_pop_2011E, na.rm = TRUE)
 pct_renter_2011_st_dev <- sd(full_acs$pct_renter_2011, na.rm = TRUE)
 med_income_2011_st_dev <- sd(full_acs$med_income_2011E, na.rm = TRUE)
+med_propvalue_2011_st_dev <- sd(full_acs$med_propvalue_2011E, na.rm = TRUE)
+#pop_density_2011_st_dev <- sd(full_acs$pop_density_2011E, na.rm = TRUE)
 ```
 
 ```{r}
@@ -335,12 +341,28 @@ pct_renter_2011_hist <- ggplot(full_acs) +
                  bins = 30)
 
 med_income_2011_hist <- ggplot(full_acs) +
-  geom_histogram(aes(x = med_incomeE),
+  geom_histogram(aes(x = med_income_2011E),
                  bins = 30)
 
+med_propvalue_2011_hist <- ggplot(full_acs) +
+  geom_histogram(aes(x = med_propvalue_2011E),
+                 bins = 30)
+
+#pop_density_2011_hist <- ggplot(full_acs) +
+  #geom_histogram(aes(x = pop_density_2011E),
+                 #bins = 30)
 
 
 pct_pop_change_hist
+pct_black_pop_2011_hist
+pct_white_pop_2011_hist
+pct_asian_pop_2011_hist
+pct_hispanic_pop_2011_hist
+pct_renter_2011_hist
+med_income_2011_hist
+med_propvalue_2011_hist
+#pop_density_2011_hist
+
 ```
 
 ### References  
