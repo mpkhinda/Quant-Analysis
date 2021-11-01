@@ -365,6 +365,75 @@ med_propvalue_2011_hist
 
 ```
 
+```{r}
+cont_summary <- tibble(
+  Variable = c("Percent Population Change",
+               "Percent Black",
+               "Percent White",
+               "Percent Asian",
+               "Percent Hispanic",
+               "Percent Renter",
+               "Median Income",
+               "Median Property Value"),
+ 
+   `Sample mean` = c(pct_pop_change_t_test$estimate,
+                    pct_black_pop_2011_t_test$estimate,
+                    pct_white_pop_2011_t_test$estimate,
+                    pct_asian_pop_2011_t_test$estimate,
+                    pct_hispanic_pop_2011_t_test$estimate,
+                    pct_renter_2011_t_test$estimate,
+                    med_income_2011_t_test$estimate,
+                    med_propvalue_2011_t_test$estimate),
+  
+  `Population mean (95% confidence) - low` = 
+    c(pct_pop_change_t_test$conf.int[1],
+      pct_black_pop_2011_t_test$conf.int[1],
+      pct_white_pop_2011_t_test$conf.int[1],
+      pct_asian_pop_2011_t_test$conf.int[1],
+      pct_hispanic_pop_2011_t_test$conf.int[1],
+      pct_renter_2011_t_test$conf.int[1],
+      med_income_2011_t_test$conf.int[1],
+      med_propvalue_2011_t_test$conf.int[1]),
+  
+  `Population mean (95% confidence) - high` =
+    c(pct_pop_change_t_test$conf.int[2],
+      pct_black_pop_2011_t_test$conf.int[2],
+      pct_white_pop_2011_t_test$conf.int[2],
+      pct_asian_pop_2011_t_test$conf.int[2],
+      pct_hispanic_pop_2011_t_test$conf.int[2],
+      pct_renter_2011_t_test$conf.int[2],
+      med_income_2011_t_test$conf.int[2],
+      med_propvalue_2011_t_test$conf.int[2]),
+    
+  Median = c(pct_pop_change_quartiles[3],
+             pct_black_pop_2011_quartiles[3],
+             pct_white_pop_2011_quartiles[3],
+             pct_asian_pop_2011_quartiles[3],
+             pct_hispanic_pop_2011_quartiles[3],
+             pct_renter_2011_quartiles[3],
+             med_propvalue_2011_quartiles[3]),
+  
+  `Interquartile range` = c(pct_pop_change_quartiles[4] - pct_pop_change_quartiles[2],
+                            pct_black_pop_2011_quartiles[4] - pct_black_pop_2011_quartiles[2],
+                            pct_white_pop_2011_quartiles[4] - pct_white_pop_2011_quartiles[2],
+                            pct_asian_pop_2011_quartiles[4] - pct_asian_pop_2011_quartiles[2],
+                            pct_hispanic_pop_2011_quartiles[4] -  pct_hispanic_pop_2011_quartiles[2],
+                            pct_renter_2011_quartiles[4] - pct_renter_2011_quartiles[2], 
+                            med_propvalue_2011_quartiles[4] - med_propvalue_2011_quartiles[2]),
+                     
+  `Standard deviation` = c(pct_pop_change_st_dev,
+                           pct_black_pop_2011_st_dev,
+                           pct_white_pop_2011_st_dev,
+                           pct_asian_pop_2011_st_dev,
+                           pct_hispanic_pop_2011_st_dev,
+                           pct_renter_2011_st_dev,
+                           med_income_2011_st_dev,
+                           med_propvalue_2011_st_dev
+                          ))
+
+kable(cont_summary, digits = 0)
+```
+
 ### References  
 
 Faber, Jacob William. “Superstorm Sandy and the Demographics of Flood Risk in New York City.” *Human Ecology* 43, no. 3 (2015): 363–78. http://www.jstor.org/stable/24762762.
