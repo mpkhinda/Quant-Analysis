@@ -22,18 +22,7 @@ Faber (2015) finds that flood risk in New York City during Hurricane Sandy varie
 
 Our dataset will include the following American Community Survey 5-year estimate variables for years ending in 2011-2016:
 
-Geographic Mobility by Age (Continuous variable - ACS: B07001)  
-Geographic Mobility by Race (Continuous variable - ACS: B07004A, B07004B, B07004C, B07004D, B07004E)  
-Geographic Mobility by Hispanic / Non-Hispanic (Continuous variable - ACS: B07004I)  
-Geographic Mobility by Income (Continuous Variable - ACS: B07010)  
-Geographic Mobility by Housing Tenure (Continuous - ACS: B07013)  
-Median Monthly Gross Rent (Continuous - ACS: B25064_001)  
-Median Selected Monthly Owner Costs (Continuous - ACS: B25088_001)  
-County (Categorical - ACS)  
-Location in 100-year Floodplain (Categorical - FEMA flood maps)*  
-Flooded in Superstorm Sandy (Categorical - TBD)*  
-  
-*Floodplain location data and Sandy flooding data has not yet been worked out, though the anticipated workflow is to import a shapefile and use st_intersects() with the census tracts to return a Boolean True/False variable. Shapefiles are expected to be pulled from FEMA flood maps. Superstorm Sandy data has been hard to find, but we found one dataset from NYC at https://data.cityofnewyork.us/Environment/Sandy-Inundation-Zone/uyj8-7rv5 and are hoping to find others by state or county. Any advice or help on this workflow would be appreciated.
+Total Population in 2011 (Continuous — ACS) Total Population in 2013 (Continuous — ACS) Percent change in population (Continuous — calculated (2013 tot_pop - 2011 tot_pop)/(2011 tot_pop)* 100) Percent Race in 2011 (Continuous — ACS) Percent Hispanic in 2011 (Continuous - ACS) Median Income in 2011 (Continuous — ACS) Median Property Value (Continuous — ACS) Percent Renter in 2011 (Continuous — ACS) County (Categorical - ACS) Majority Vote Democrat/Republican 2008 Election (Categorical - MIT Election Lab)  
 
 The sample population is people in all census tracts within the following counties, which were highly affected by Sandy:
 
@@ -277,9 +266,9 @@ kable(head(full_acs))
 
 The dataset includes 4515 census tracts.
 
-### DESCRIPTIVE STATISTICS
+### DESCRIPTIVE STATISTICS - CONTINUOUS
 
-```{r}
+```{r t test, results = 'hide', message=FALSE}
 pct_pop_change_t_test <- t.test(full_acs$pct_pop_changeE)
 pct_black_pop_2011_t_test <- t.test(full_acs$pct_black_pop_2011E)
 pct_white_pop_2011_t_test <- t.test(full_acs$pct_white_pop_2011E)
@@ -291,7 +280,7 @@ med_propvalue_2011_t_test <- t.test(full_acs$med_propvalue_2011E)
 #pop_density_2011_t_test <- t.test(full_acs$pop_density_2011E)
 ```
 
-```{r}
+```{r quartiles, results = 'hide', message=FALSE}
 pct_pop_change_quartiles <- quantile(full_acs$pct_pop_changeE, na.rm = TRUE)
 pct_black_pop_2011_quartiles <- quantile(full_acs$pct_black_pop_2011E, na.rm = TRUE)
 pct_white_pop_2011_quartiles <- quantile(full_acs$pct_white_pop_2011E, na.rm = TRUE)
@@ -300,10 +289,10 @@ pct_hispanic_pop_2011_quartiles <- quantile(full_acs$pct_hispanic_pop_2011E, na.
 pct_renter_2011_quartiles <- quantile(full_acs$pct_renter_2011E, na.rm = TRUE)
 med_income_2011_quartiles <- quantile(full_acs$med_income_2011E, na.rm = TRUE)
 med_propvalue_2011_quartiles <- quantile(full_acs$med_propvalue_2011E, na.rm = TRUE)
-#pop_density_2011_quartiles <- quantile(full_acs$pop_density_2011E, na.rm = TRUE)
+
 ```
 
-```{r}
+```{r standard deviation, results = 'hide', message=FALSE}
 pct_pop_change_st_dev <- sd(full_acs$pct_pop_changeE, na.rm = TRUE)
 pct_black_pop_2011_st_dev <- sd(full_acs$pct_black_pop_2011E, na.rm = TRUE)
 pct_white_pop_2011_st_dev <- sd(full_acs$pct_white_pop_2011E, na.rm = TRUE)
@@ -312,10 +301,10 @@ pct_hispanic_pop_2011_st_dev <- sd(full_acs$pct_hispanic_pop_2011E, na.rm = TRUE
 pct_renter_2011_st_dev <- sd(full_acs$pct_renter_2011, na.rm = TRUE)
 med_income_2011_st_dev <- sd(full_acs$med_income_2011E, na.rm = TRUE)
 med_propvalue_2011_st_dev <- sd(full_acs$med_propvalue_2011E, na.rm = TRUE)
-#pop_density_2011_st_dev <- sd(full_acs$pop_density_2011E, na.rm = TRUE)
+
 ```
 
-```{r}
+```{r histograms, message=FALSE}
 pct_pop_change_hist <- ggplot(full_acs) +
   geom_histogram(aes(x = pct_pop_changeE),
                  bins = 30)
@@ -348,11 +337,6 @@ med_propvalue_2011_hist <- ggplot(full_acs) +
   geom_histogram(aes(x = med_propvalue_2011E),
                  bins = 30)
 
-#pop_density_2011_hist <- ggplot(full_acs) +
-  #geom_histogram(aes(x = pop_density_2011E),
-                 #bins = 30)
-
-
 pct_pop_change_hist
 pct_black_pop_2011_hist
 pct_white_pop_2011_hist
@@ -361,11 +345,10 @@ pct_hispanic_pop_2011_hist
 pct_renter_2011_hist
 med_income_2011_hist
 med_propvalue_2011_hist
-#pop_density_2011_hist
 
 ```
 
-```{r}
+```{r table, message=FALSE}
 cont_summary <- tibble(
   Variable = c("Percent Population Change",
                "Percent Black",
@@ -435,6 +418,88 @@ cont_summary <- tibble(
 
 kable(cont_summary, digits = 0)
 ```
+### DESCRIPTIVE STATISTICS - CATEGORICAL
+
+```{r , message=FALSE}
+democrat_t_test <- t.test(full_acs$majority_vote == unique(full_acs$majority_vote)[1])
+republican_t_test <- t.test(full_acs$majority_vote == unique(full_acs$majority_vote)[2])
+
+cat_summary_party <- tibble(`Majority Party in 2008` = 
+                              c("Democrat",
+                                "Republican"),
+                            `Sample proportion` = 
+                              c(democrat_t_test$estimate * 100,
+                                republican_t_test$estimate *100),
+                            `95-percent confidence - low` = 
+                              c(democrat_t_test$conf.int[1] * 100,
+                                republican_t_test$conf.int[1] * 100),
+                            `95-percent confidence - high` = 
+                              c(democrat_t_test$conf.int[2] * 100,
+                                republican_t_test$conf.int[2] * 100))
+
+kable(cat_summary_party, digits = 1)
+```
+
+```{r , results = 'hide', message=FALSE}
+bergen_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[1])
+bronx_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[2])
+essex_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[3])
+fairfield_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[4])
+hudson_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[5])
+kings_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[6])
+middlesex_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[7])
+monmouth_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[8])
+nassau_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[9])
+newhaven_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[10])
+newyork_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[11])
+ocean_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[12])
+queens_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[13])
+richmond_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[14])
+rockland_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[15])
+suffolk_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[16])
+union_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[17])
+westchester_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[18])
+
+cat_summary_county <- tibble(`County` = 
+                              c("Bergen County", "Bronx County", "Essex County",
+                                "Fairfield County", "Hudson County", "Kings County",
+                                "Middlesex County", "Monmouth County", "Nassau County",
+                                "New Haven County", "New York County", "Ocean County",
+                                "Queens County", "Richmond County", "Rockland County",
+                                "Suffolk County", "Union County", "Westchester County"),
+                            `Sample proportion` = 
+                              c(bergen_county_t_test$estimate * 100, bronx_county_t_test$estimate *100,
+                                essex_county_t_test$estimate *100, fairfield_county_t_test$estimate *100,
+                                hudson_county_t_test$estimate *100, kings_county_t_test$estimate *100,
+                                middlesex_county_t_test$estimate *100, monmouth_county_t_test$estimate *100,
+                                nassau_county_t_test$estimate *100, newhaven_county_t_test$estimate *100,
+                                newyork_county_t_test$estimate *100, ocean_county_t_test$estimate *100,
+                                queens_county_t_test$estimate *100, richmond_county_t_test$estimate *100,
+                                rockland_county_t_test$estimate *100, suffolk_county_t_test$estimate *100,
+                                union_county_t_test$estimate *100, westchester_county_t_test$estimate *100),
+                            `95-percent confidence - low` = 
+                              c(bergen_county_t_test$conf.int[1] * 100, bronx_county_t_test$conf.int[1] * 100,
+                                essex_county_t_test$conf.int[1] * 100,fairfield_county_t_test$conf.int[1] * 100,
+                                hudson_county_t_test$conf.int[1] * 100, kings_county_t_test$conf.int[1] * 100,
+                                middlesex_county_t_test$conf.int[1] * 100, monmouth_county_t_test$conf.int[1] * 100,
+                                nassau_county_t_test$conf.int[1] * 100, newhaven_county_t_test$conf.int[1] * 100,
+                                newyork_county_t_test$conf.int[1] * 100, ocean_county_t_test$conf.int[1] * 100,
+                                queens_county_t_test$conf.int[1] * 100, richmond_county_t_test$conf.int[1] * 100,
+                                rockland_county_t_test$conf.int[1] * 100, suffolk_county_t_test$conf.int[1] * 100,
+                                union_county_t_test$conf.int[1] * 100, westchester_county_t_test$conf.int[1] * 100),
+                            `95-percent confidence - high` = 
+                              c(bergen_county_t_test$conf.int[2] * 100, bronx_county_t_test$conf.int[2] * 100,
+                                essex_county_t_test$conf.int[2] * 100, fairfield_county_t_test$conf.int[2] * 100,
+                                hudson_county_t_test$conf.int[2] * 100, kings_county_t_test$conf.int[2] * 100,
+                                middlesex_county_t_test$conf.int[2] * 100, monmouth_county_t_test$conf.int[2] * 100,
+                                nassau_county_t_test$conf.int[2] * 100, newhaven_county_t_test$conf.int[2] * 100,
+                                newyork_county_t_test$conf.int[2] * 100, ocean_county_t_test$conf.int[2] * 100,
+                                queens_county_t_test$conf.int[2] * 100, richmond_county_t_test$conf.int[2] * 100,
+                                rockland_county_t_test$conf.int[2] * 100, suffolk_county_t_test$conf.int[2] * 100,
+                                union_county_t_test$conf.int[2] * 100, westchester_county_t_test$conf.int[2] * 100))
+
+kable(cat_summary_county, digits = 1)
+```
 
 ### References  
 
@@ -442,5 +507,6 @@ Faber, Jacob William. “Superstorm Sandy and the Demographics of Flood Risk in 
 
 Fussell, Elizabeth, and Elizabeth Harris. “Homeownership and Housing Displacement after Hurricane Katrina among Low-Income African-American Mothers in New Orleans.” *Social Science Quarterly* 95, no. 4 (2014): 1086-1100. doi:10.1111/ssqu.12114. 
 
-United States Census Bureau. American Community Survey, 5-year estimates. 2011-2016.
+MIT Election Lab, https://electionlab.mit.edu/. 
 
+United States Census Bureau. American Community Survey, 5-year estimates. 2011, 2013.
