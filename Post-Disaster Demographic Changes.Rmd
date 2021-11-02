@@ -440,7 +440,7 @@ cat_summary_party <- tibble(`Majority Party in 2008` =
 kable(cat_summary_party, digits = 1)
 ```
 
-```{r , results = 'hide', message=FALSE}
+```{r , message=FALSE}
 bergen_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[1])
 bronx_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[2])
 essex_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[3])
