@@ -500,6 +500,41 @@ cat_summary_county <- tibble(`County` =
 
 kable(cat_summary_county, digits = 1)
 ```
+```{r , message=FALSE}
+
+cor.test(~ pct_pop_changeE + pct_black_pop_2011E, data = full_acs)
+cor.test(~ pct_pop_changeE + pct_white_pop_2011E, data = full_acs)
+cor.test(~ pct_pop_changeE + pct_asian_pop_2011E, data = full_acs)
+cor.test(~ pct_pop_changeE + pct_hispanic_pop_2011E, data = full_acs)
+cor.test(~ pct_pop_changeE + pct_renter_2011E, data = full_acs)
+cor.test(~ pct_pop_changeE + med_income_2011E, data = full_acs)
+cor.test(~ pct_pop_changeE + med_propvalue_2011E, data = full_acs)
+
+```
+
+```{r , message=FALSE}
+black_model <- lm(pct_pop_changeE ~ pct_black_pop_2011E, data = full_acs)
+white_model <- lm(pct_pop_changeE ~ pct_white_pop_2011E, data = full_acs)
+asian_model <- lm(pct_pop_changeE ~ pct_asian_pop_2011E, data = full_acs)
+hispanic_model <- lm(pct_pop_changeE ~ pct_hispanic_pop_2011E, data = full_acs)
+renter_model <- lm(pct_pop_changeE ~ pct_renter_2011E, data = full_acs)
+income_model <- lm(pct_pop_changeE ~ med_income_2011E, data = full_acs)
+propvalue_model <- lm(pct_pop_changeE ~ med_propvalue_2011E, data = full_acs)
+
+summary(black_model)
+summary(white_model)
+summary(asian_model)
+summary(hispanic_model)
+summary(renter_model)
+summary(income_model)
+summary(propvalue_model)
+
+
+```
+
+
+```
+
 
 ### References  
 
