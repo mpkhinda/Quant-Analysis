@@ -531,9 +531,23 @@ summary(propvalue_model)
 
 
 ```
+```{r , message=FALSE}
 
+t.test(pct_pop_changeE ~ majority_vote, full_acs)
 
 ```
+
+```{r , message=FALSE}
+
+party_model <- lm(pct_pop_changeE ~ majority_vote, data = full_acs)
+
+summary(party_model)
+
+```
+
+
+
+
 
 
 ### References  
