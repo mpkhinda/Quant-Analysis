@@ -247,7 +247,19 @@ election <- read_csv(here("Data", "countypres_2000-2020.csv")) %>%
 #adding election data to full acs
 full_acs <- merge(full_acs, election, by.x = "county", by.y = "county_name")
   
+#adding in flood data
+floodplain <- read_sf(here("Data", "floodedtracts.shp"))
 
+floodplain <- floodplain %>%
+  mutate(flooded = "Y") %>%
+  st_set_geometry(NULL) %>%
+  select(GEOID, flooded)
+
+#merge floodplain with full
+full_acs <- merge(full_acs, floodplain, by = "GEOID", all.x = "TRUE")
+
+full_acs <- full_acs %>%
+  mutate(flooded = replace_na(flooded, "N"))
 
 ```
 
