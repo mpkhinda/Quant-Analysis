@@ -267,7 +267,7 @@ full_acs <- full_acs %>%
 #plot to test that correct counties are coming through
 ggplot(full_acs)+
   annotation_map_tile(zoomin = 0, progress = "none", type = "cartolight") +
-  geom_sf(aes(fill = majority_vote), color = "black")+
+  geom_sf(aes(fill = flooded), color = NA)+
   scale_fill_manual(values = c("blue", "red"))+
   theme_void()
 ```
