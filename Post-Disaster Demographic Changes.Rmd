@@ -22,7 +22,7 @@ Faber (2015) finds that flood risk in New York City during Hurricane Sandy varie
 
 Our dataset will include the following American Community Survey 5-year estimate variables for years ending in 2011-2016:
 
-Total Population in 2011 (Continuous — ACS) Total Population in 2013 (Continuous — ACS) Percent change in population (Continuous — calculated (2013 tot_pop - 2011 tot_pop)/(2011 tot_pop)* 100) Percent Race in 2011 (Continuous — ACS) Percent Hispanic in 2011 (Continuous - ACS) Median Income in 2011 (Continuous — ACS) Median Property Value (Continuous — ACS) Percent Renter in 2011 (Continuous — ACS) County (Categorical - ACS) Majority Vote Democrat/Republican 2008 Election (Categorical - MIT Election Lab)  
+Total Population in 2011 (Continuous — ACS) Total Population in 2013 (Continuous — ACS) Percent change in population (Continuous — calculated (2013 tot_pop - 2011 tot_pop)/(2011 tot_pop)* 100) Percent Race in 2011 (Continuous — ACS) Percent Hispanic in 2011 (Continuous - ACS) Median Income in 2011 (Continuous — ACS) Median Property Value (Continuous — ACS) Percent Renter in 2011 (Continuous — ACS) County (Categorical - ACS) Majority Vote Democrat/Republican 2008 Election (Categorical - MIT Election Lab) Location in flood plain (Categorical - FEMA flood maps)
 
 The sample population is people in all census tracts within the following counties, which were highly affected by Sandy:
 
@@ -432,7 +432,7 @@ kable(cont_summary, digits = 0)
 ```
 ### DESCRIPTIVE STATISTICS - CATEGORICAL
 
-```{r , message=FALSE}
+```{r party table, message=FALSE}
 democrat_t_test <- t.test(full_acs$majority_vote == unique(full_acs$majority_vote)[1])
 republican_t_test <- t.test(full_acs$majority_vote == unique(full_acs$majority_vote)[2])
 
@@ -451,8 +451,24 @@ cat_summary_party <- tibble(`Majority Party in 2008` =
 
 kable(cat_summary_party, digits = 1)
 ```
+```{r flood table, message=FALSE}
+flooded_t_test <- t.test(full_acs$flooded == unique(full_acs$flooded)[1])
 
-```{r , message=FALSE}
+cat_summary_flooded <- tibble('Flooded Tracts' = 
+                              c("Yes"
+                                ),
+                            `Sample proportion` = 
+                              c(flooded_t_test$estimate * 100),                               
+                            `95-percent confidence - low` = 
+                              c(flooded_t_test$conf.int[1] * 100),                                
+                            `95-percent confidence - high` = 
+                              c(flooded_t_test$conf.int[2] * 100))
+                                
+
+kable(cat_summary_flooded, digits = 1)
+```
+
+```{r county tests, message=FALSE}
 bergen_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[1])
 bronx_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[2])
 essex_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[3])
@@ -512,6 +528,7 @@ cat_summary_county <- tibble(`County` =
 
 kable(cat_summary_county, digits = 1)
 ```
+
 ```{r correlations, message=FALSE}
 
 cor.test(~ pct_pop_changeE + pct_black_pop_2011E, data = full_acs)
@@ -524,28 +541,27 @@ cor.test(~ pct_pop_changeE + med_propvalue_2011E, data = full_acs)
 
 ```
 
-```{r , message=FALSE}
+The correlation tests tell us that there is a significant relationship between percent population change and: percent white, percent Asian, percent renter, and median income. 
+
+```{r vote ttest, message=FALSE}
 
 t.test(pct_pop_changeE ~ majority_vote, full_acs)
 
 ```
+```{r flooded ttest, message=FALSE}
 
-```{r , message=FALSE}
-
-party_model <- lm(pct_pop_changeE ~ majority_vote, data = full_acs)
-
-summary(party_model)
+t.test(pct_pop_changeE ~ flooded, full_acs)
 
 ```
 
-
-
-
+There is no significant relationship between percent population change and whether or not a tract is in the flood zone. 
 
 
 ### References  
 
 Faber, Jacob William. “Superstorm Sandy and the Demographics of Flood Risk in New York City.” *Human Ecology* 43, no. 3 (2015): 363–78. http://www.jstor.org/stable/24762762.
+
+FEMA National Flood Insurance Program, https://www.fema.gov/bn/flood-maps.
 
 Fussell, Elizabeth, and Elizabeth Harris. “Homeownership and Housing Displacement after Hurricane Katrina among Low-Income African-American Mothers in New Orleans.” *Social Science Quarterly* 95, no. 4 (2014): 1086-1100. doi:10.1111/ssqu.12114. 
 
