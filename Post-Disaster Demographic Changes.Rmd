@@ -556,6 +556,14 @@ t.test(pct_pop_changeE ~ flooded, full_acs)
 
 There is no significant relationship between percent population change and whether or not a tract is in the flood zone. 
 
+```{r multivariate regression, message=FALSE}
+
+full_model <- lm(covid_rate ~ med_age_E + pop_dens + majority_vote + type, my_data)
+
+summary(full_model)
+
+```
+
 
 ### References  
 
