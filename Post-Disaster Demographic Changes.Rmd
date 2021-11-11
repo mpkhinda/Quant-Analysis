@@ -556,14 +556,83 @@ t.test(pct_pop_changeE ~ flooded, full_acs)
 
 There is no significant relationship between percent population change and whether or not a tract is in the flood zone. 
 
-```{r multivariate regression, message=FALSE}
-
-full_model <- lm(covid_rate ~ med_age_E + pop_dens + majority_vote + type, my_data)
-
-summary(full_model)
-
+```{r bivariate plot renter vs pop change, message=FALSE}
+renter_pop_plot <- ggplot(full_acs, aes(pct_renter_2011E, pct_pop_changeE))+
+  geom_point() + ylim(-100, 100)
+  
+  
+renter_pop_plot + stat_smooth(
+              method = "lm",
+              formula = y ~ x,
+              geom = "smooth")
 ```
 
+```{r bivariate plot propvalue vs pop change, message=FALSE}
+propvalue_plot <- ggplot(full_acs, aes(med_propvalue_2011E, pct_pop_changeE))+
+  geom_point() + ylim(-100, 100)
+  
+  
+propvalue_plot + stat_smooth(
+              method = "lm",
+              formula = y ~ x,
+              geom = "smooth")
+```
+
+```{r bivariate plot white pop vs pop change, message=FALSE}
+white_pop_plot <- ggplot(full_acs, aes(pct_white_pop_2011E, pct_pop_changeE))+
+  geom_point() + ylim(-100, 100)
+  
+  
+white_pop_plot + stat_smooth(
+              method = "lm",
+              formula = y ~ x,
+              geom = "smooth")
+```
+
+```{r bivariate plot asian pop vs pop change, message=FALSE}
+asian_pop_plot <- ggplot(full_acs, aes(pct_asian_pop_2011E, pct_pop_changeE))+
+  geom_point() + ylim(-100, 100)
+  
+  
+asian_pop_plot + stat_smooth(
+              method = "lm",
+              formula = y ~ x,
+              geom = "smooth")
+```
+
+```{r bivariate plot income vs pop change, message=FALSE}
+income_pop_plot <- ggplot(full_acs, aes(med_income_2011E, pct_pop_changeE))+
+  geom_point() + ylim(-100, 100)+
+  facet_wrap(vars(county))
+  
+  
+income_pop_plot + stat_smooth(
+              method = "lm",
+              formula = y ~ x,
+              geom = "smooth")
+```
+
+```{r multivariate regression continuous, message=FALSE}
+
+full_model_cont <- lm(pct_pop_changeE ~ pct_black_pop_2011E + pct_white_pop_2011E + pct_asian_pop_2011E + pct_hispanic_pop_2011E + pct_renter_2011E + med_income_2011E + med_propvalue_2011E, full_acs)
+
+summary(full_model_cont)
+
+```
+```{r multivariate regression categorical, message=FALSE}
+
+full_model_cat <- lm(pct_pop_changeE ~ majority_vote + flooded, full_acs)
+
+summary(full_model_cat)
+
+```
+```{r multivariate regression combined, message=FALSE}
+
+full_model_com <- lm(pct_pop_changeE ~ pct_black_pop_2011E + pct_white_pop_2011E + pct_asian_pop_2011E + pct_hispanic_pop_2011E + pct_renter_2011E + med_income_2011E + med_propvalue_2011E + majority_vote + flooded, full_acs)
+
+summary(full_model_com)
+
+```
 
 ### References  
 
