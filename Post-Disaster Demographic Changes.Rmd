@@ -622,21 +622,8 @@ income_pop_plot + stat_smooth(
               formula = y ~ x,
               geom = "smooth")
 ```
+### Multivariate Regression
 
-```{r multivariate regression continuous, message=FALSE}
-
-full_model_cont <- lm(pct_pop_changeE ~ pct_black_pop_2011E + pct_white_pop_2011E + pct_asian_pop_2011E + pct_hispanic_pop_2011E + pct_renter_2011E + med_income_2011E + med_propvalue_2011E, full_acs)
-
-summary(full_model_cont)
-
-```
-```{r multivariate regression categorical, message=FALSE}
-
-full_model_cat <- lm(pct_pop_changeE ~ majority_vote + flooded, full_acs)
-
-summary(full_model_cat)
-
-```
 ```{r multivariate regression combined, message=FALSE}
 
 full_model_com <- lm(pct_pop_changeE ~ pct_black_pop_2011E + pct_white_pop_2011E + pct_asian_pop_2011E + pct_hispanic_pop_2011E + pct_renter_2011E + med_income_2011E + med_propvalue_2011E + majority_vote + flooded, full_acs)
@@ -644,6 +631,12 @@ full_model_com <- lm(pct_pop_changeE ~ pct_black_pop_2011E + pct_white_pop_2011E
 summary(full_model_com)
 
 ```
+
+When all variables are estimated together in multivariate regression, we found that all continuous variables estimated in bivariate regression demonstrated a weaker correlation with population change then when estimated alone. Percent renter remained significantly correlated with population change, with each additional percent change in renter explaining 0.089% increase in population change.
+
+Both categorical variables show very minor but some significant correlation with population change. Whether a census tract was in a floodplain or not was significant at the 0.05 level and correlated with a 0.64% increase in population change.
+
+All together, our variables only explain 2.058% of variation in population change (1.856% adjusted). Reflecting on our data set, this could be explained by the heterogeneity of census tracts analyzed, because we may be comparing tracts in fast-growing (though perhaps flood-prone) neighborhoods in NYC with much slower growing, spatially distinct areas elsewhere in the metro region. To better understand the impact of spatial heterogeneity on our data, we hope to include analyses at the county-level for upcoming assignments.
 
 ### References  
 
