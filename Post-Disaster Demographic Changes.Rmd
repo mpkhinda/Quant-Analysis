@@ -544,7 +544,7 @@ cor.test(~ pct_pop_changeE + med_propvalue_2011E, data = full_acs)
 
 ### Correlation Interpretation
 
-The correlation tests tell us that there is a significant relationship between percent population change and: percent white, percent Asian, percent renter, and median income. There is not a significant relationship between percent population change and: percent Black, percent Hispanic, and median property value.
+The correlation tests tell us that there is a significant relationship between percent population change and: percent white, percent Asian, percent renter, and median income. Increases in white population and median income are associated with a decrease in percent population change. Increases in Asian population and percent renter are associated with an increase in percent population change. There is not a significant relationship between percent population change and: percent Black, percent Hispanic, and median property value.
 
 ### Categorical T-Test
 
@@ -553,7 +553,7 @@ The correlation tests tell us that there is a significant relationship between p
 t.test(pct_pop_changeE ~ majority_vote, full_acs)
 
 ```
-There is a significant relationship between percent population change and majority vote.
+There is a significant relationship between percent population change and majority vote. Democratic counties overall have higher percent population change than Republican counties. 
 
 ```{r flooded ttest, message=FALSE}
 
