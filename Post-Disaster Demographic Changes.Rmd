@@ -467,67 +467,7 @@ cat_summary_flooded <- tibble('Flooded Tracts' =
 
 kable(cat_summary_flooded, digits = 1)
 ```
-
-```{r county tests, message=FALSE}
-bergen_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[1])
-bronx_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[2])
-essex_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[3])
-fairfield_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[4])
-hudson_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[5])
-kings_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[6])
-middlesex_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[7])
-monmouth_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[8])
-nassau_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[9])
-newhaven_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[10])
-newyork_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[11])
-ocean_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[12])
-queens_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[13])
-richmond_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[14])
-rockland_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[15])
-suffolk_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[16])
-union_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[17])
-westchester_county_t_test <- t.test(full_acs$county == unique(full_acs$county)[18])
-
-cat_summary_county <- tibble(`County` = 
-                              c("Bergen County", "Bronx County", "Essex County",
-                                "Fairfield County", "Hudson County", "Kings County",
-                                "Middlesex County", "Monmouth County", "Nassau County",
-                                "New Haven County", "New York County", "Ocean County",
-                                "Queens County", "Richmond County", "Rockland County",
-                                "Suffolk County", "Union County", "Westchester County"),
-                            `Sample proportion` = 
-                              c(bergen_county_t_test$estimate * 100, bronx_county_t_test$estimate *100,
-                                essex_county_t_test$estimate *100, fairfield_county_t_test$estimate *100,
-                                hudson_county_t_test$estimate *100, kings_county_t_test$estimate *100,
-                                middlesex_county_t_test$estimate *100, monmouth_county_t_test$estimate *100,
-                                nassau_county_t_test$estimate *100, newhaven_county_t_test$estimate *100,
-                                newyork_county_t_test$estimate *100, ocean_county_t_test$estimate *100,
-                                queens_county_t_test$estimate *100, richmond_county_t_test$estimate *100,
-                                rockland_county_t_test$estimate *100, suffolk_county_t_test$estimate *100,
-                                union_county_t_test$estimate *100, westchester_county_t_test$estimate *100),
-                            `95-percent confidence - low` = 
-                              c(bergen_county_t_test$conf.int[1] * 100, bronx_county_t_test$conf.int[1] * 100,
-                                essex_county_t_test$conf.int[1] * 100,fairfield_county_t_test$conf.int[1] * 100,
-                                hudson_county_t_test$conf.int[1] * 100, kings_county_t_test$conf.int[1] * 100,
-                                middlesex_county_t_test$conf.int[1] * 100, monmouth_county_t_test$conf.int[1] * 100,
-                                nassau_county_t_test$conf.int[1] * 100, newhaven_county_t_test$conf.int[1] * 100,
-                                newyork_county_t_test$conf.int[1] * 100, ocean_county_t_test$conf.int[1] * 100,
-                                queens_county_t_test$conf.int[1] * 100, richmond_county_t_test$conf.int[1] * 100,
-                                rockland_county_t_test$conf.int[1] * 100, suffolk_county_t_test$conf.int[1] * 100,
-                                union_county_t_test$conf.int[1] * 100, westchester_county_t_test$conf.int[1] * 100),
-                            `95-percent confidence - high` = 
-                              c(bergen_county_t_test$conf.int[2] * 100, bronx_county_t_test$conf.int[2] * 100,
-                                essex_county_t_test$conf.int[2] * 100, fairfield_county_t_test$conf.int[2] * 100,
-                                hudson_county_t_test$conf.int[2] * 100, kings_county_t_test$conf.int[2] * 100,
-                                middlesex_county_t_test$conf.int[2] * 100, monmouth_county_t_test$conf.int[2] * 100,
-                                nassau_county_t_test$conf.int[2] * 100, newhaven_county_t_test$conf.int[2] * 100,
-                                newyork_county_t_test$conf.int[2] * 100, ocean_county_t_test$conf.int[2] * 100,
-                                queens_county_t_test$conf.int[2] * 100, richmond_county_t_test$conf.int[2] * 100,
-                                rockland_county_t_test$conf.int[2] * 100, suffolk_county_t_test$conf.int[2] * 100,
-                                union_county_t_test$conf.int[2] * 100, westchester_county_t_test$conf.int[2] * 100))
-
-kable(cat_summary_county, digits = 1)
-```
+  
 ### Correlation Tests
 
 ```{r correlations, message=FALSE}
@@ -622,6 +562,10 @@ income_pop_plot + stat_smooth(
               formula = y ~ x,
               geom = "smooth")
 ```
+  
+### Visualization Interpreation
+From these visualizations, specifically the one that was facet wrapped by county, we can see that there are significant outliers in positive change in population in New York County and Kings County (Manhattan and Brooklyn in New York City). We wanted to acknowledge that these may have a disproportionate influence on the correlations between overall demographics and overall population change. 
+  
 ### Multivariate Regression
 
 ```{r multivariate regression combined, message=FALSE}
@@ -632,6 +576,8 @@ summary(full_model_com)
 
 ```
 
+  
+### Multivariate Regression Interpretation  
 When all variables are estimated together in multivariate regression, we found that all continuous variables estimated in bivariate regression demonstrated a weaker correlation with population change then when estimated alone. Percent renter remained significantly correlated with population change, with each additional percent change in renter explaining 0.089% increase in population change.
 
 Both categorical variables show very minor but some significant correlation with population change. Whether a census tract was in a floodplain or not was significant at the 0.05 level and correlated with a 0.64% increase in population change.
