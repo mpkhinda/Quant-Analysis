@@ -528,6 +528,7 @@ cat_summary_county <- tibble(`County` =
 
 kable(cat_summary_county, digits = 1)
 ```
+### Correlation Tests
 
 ```{r correlations, message=FALSE}
 
@@ -541,13 +542,19 @@ cor.test(~ pct_pop_changeE + med_propvalue_2011E, data = full_acs)
 
 ```
 
-The correlation tests tell us that there is a significant relationship between percent population change and: percent white, percent Asian, percent renter, and median income. 
+### Correlation Interpretation
+
+The correlation tests tell us that there is a significant relationship between percent population change and: percent white, percent Asian, percent renter, and median income. There is not a significant relationship between percent population change and: percent Black, percent Hispanic, and median property value.
+
+### Categorical T-Test
 
 ```{r vote ttest, message=FALSE}
 
 t.test(pct_pop_changeE ~ majority_vote, full_acs)
 
 ```
+There is a significant relationship between percent population change and majority vote.
+
 ```{r flooded ttest, message=FALSE}
 
 t.test(pct_pop_changeE ~ flooded, full_acs)
@@ -555,6 +562,10 @@ t.test(pct_pop_changeE ~ flooded, full_acs)
 ```
 
 There is no significant relationship between percent population change and whether or not a tract is in the flood zone. 
+
+### Visualizations
+
+To better understand the correlations, we created a set of scatter plots.
 
 ```{r bivariate plot renter vs pop change, message=FALSE}
 renter_pop_plot <- ggplot(full_acs, aes(pct_renter_2011E, pct_pop_changeE))+
