@@ -39,6 +39,8 @@ library(sf)
 library(ggspatial)
 library(here)
 library(stringr)
+library(gridExtra)
+library(jtools)
 ```
 
 ```{r explore ACS data, include=FALSE}
@@ -583,6 +585,69 @@ When all variables are estimated together in multivariate regression, we found t
 Both categorical variables show very minor but some significant correlation with population change. Whether a census tract was in a floodplain or not was significant at the 0.05 level and correlated with a 0.64% increase in population change.
 
 All together, our variables only explain 2.058% of variation in population change (1.856% adjusted). Reflecting on our data set, this could be explained by the heterogeneity of census tracts analyzed, because we may be comparing tracts in fast-growing (though perhaps flood-prone) neighborhoods in NYC with much slower growing, spatially distinct areas elsewhere in the metro region. To better understand the impact of spatial heterogeneity on our data, we hope to include analyses at the county-level for upcoming assignments.
+
+### Mean centering
+
+```{r means centering, message=FALSE}
+
+centered_data <- full_acs %>%
+  mutate(pct_black_pop_2011E = pct_black_pop_2011E - mean(pct_black_pop_2011E, na.rm=TRUE),
+         pct_white_pop_2011E = pct_white_pop_2011E - mean(pct_white_pop_2011E, na.rm=TRUE),
+         pct_asian_pop_2011E = pct_asian_pop_2011E - mean(pct_asian_pop_2011E, na.rm=TRUE),
+        pct_hispanic_pop_2011E = pct_hispanic_pop_2011E - mean(pct_hispanic_pop_2011E, na.rm=TRUE),
+        pct_renter_2011E = pct_renter_2011E - mean(pct_renter_2011E, na.rm=TRUE),
+         med_income_2011E = med_income_2011E - mean(med_income_2011E, na.rm=TRUE),
+        med_propvalue_2011E = med_propvalue_2011E - mean(med_propvalue_2011E, na.rm=TRUE))
+
+centered_model <- lm(pct_pop_changeE ~ pct_black_pop_2011E + pct_white_pop_2011E + pct_asian_pop_2011E + pct_hispanic_pop_2011E + pct_renter_2011E + med_income_2011E + med_propvalue_2011E, centered_data)
+
+export_summs(full_model_com, centered_model, 
+             error_format = "(p = {p.value})",
+             error_pos = "same",
+             model.names = c("Initial", "Centered"))
+
+
+```
+### Scaling
+
+
+```{r scaling, message=FALSE}
+
+centered_data_scaled <- centered_data %>%
+  mutate(pct_pop_changeE = pct_pop_changeE * 100,
+         pct_black_pop_2011E_100 = pct_black_pop_2011E * 100,
+         pct_white_pop_2011E_100 = pct_white_pop_2011E * 100,
+        pct_asian_pop_2011E_100 =  pct_asian_pop_2011E * 100,
+         pct_hispanic_pop_2011E_100 = pct_hispanic_pop_2011E * 100,
+        pct_renter_2011E_100 = pct_renter_2011E * 100,
+         log2_med_income_2011E = log(med_income_2011E + mean(full_acs$med_income_2011E, na.rm = TRUE), base = 2),
+       log2_med_propvalue_2011E = log(med_propvalue_2011E + mean(full_acs$med_propvalue_2011E, na.rm = TRUE), base = 2))
+
+                   
+centered_model_scaled <- lm(pct_pop_changeE ~ pct_black_pop_2011E_100 + pct_white_pop_2011E_100 + pct_asian_pop_2011E_100 + pct_hispanic_pop_2011E_100 +  pct_renter_2011E_100 + log2_med_income_2011E +  log2_med_propvalue_2011E, centered_data_scaled)
+
+coeff_names_scaled <- c("Constant" = "(Intercept)",
+                 "% Black" = "pct_black_pop_2011E_100",
+                 "% White" = "pct_white_pop_2011E_100",
+                 "% Asian" = "pct_asian_pop_2011E_100",
+                 "% Hispanic" = "pct_hispanic_pop_2011E_100",
+                 "% Renter" = "pct_renter_2011E_100",
+                 "Median Income log" = "log2_med_income_2011E",
+                "Median Property Value log" = "log2_med_propvalue_2011E",
+                "Majority Vote Republican" = "majority_voteRepublican",
+                "Flooded Tract" = "floodedY") 
+                
+export_summs(full_model_com, centered_model, centered_model_scaled,
+             error_format = "(p = {p.value})",
+             error_pos = "same",
+             model.names = c("Initial\n(pct pop change)", 
+                             "Centered\n(pct pop change)", 
+                             "Centered\n(pct pop change*100)"),
+             coefs = coeff_names_scaled)
+```
+
+
+
 
 ### References  
 
