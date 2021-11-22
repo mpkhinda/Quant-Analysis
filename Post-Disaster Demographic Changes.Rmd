@@ -600,10 +600,10 @@ centered_data <- full_acs %>%
   mutate(pct_black_pop_2011E = pct_black_pop_2011E - mean(pct_black_pop_2011E, na.rm=TRUE),
          pct_white_pop_2011E = pct_white_pop_2011E - mean(pct_white_pop_2011E, na.rm=TRUE),
          pct_asian_pop_2011E = pct_asian_pop_2011E - mean(pct_asian_pop_2011E, na.rm=TRUE),
-        pct_hispanic_pop_2011E = pct_hispanic_pop_2011E - mean(pct_hispanic_pop_2011E, na.rm=TRUE),
-        pct_renter_2011E = pct_renter_2011E - mean(pct_renter_2011E, na.rm=TRUE),
+         pct_hispanic_pop_2011E = pct_hispanic_pop_2011E - mean(pct_hispanic_pop_2011E, na.rm=TRUE),
+         pct_renter_2011E = pct_renter_2011E - mean(pct_renter_2011E, na.rm=TRUE),
          med_income_2011E = med_income_2011E - mean(med_income_2011E, na.rm=TRUE),
-        med_propvalue_2011E = med_propvalue_2011E - mean(med_propvalue_2011E, na.rm=TRUE))
+         med_propvalue_2011E = med_propvalue_2011E - mean(med_propvalue_2011E, na.rm=TRUE))
 
 centered_model <- lm(pct_pop_changeE ~ pct_black_pop_2011E + pct_white_pop_2011E + pct_asian_pop_2011E + pct_hispanic_pop_2011E + pct_renter_2011E + med_income_2011E + med_propvalue_2011E, centered_data)
 
@@ -614,6 +614,13 @@ export_summs(full_model_com, centered_model,
 
 
 ```
+  
+Interpretation:
+
+Mean centering our dataset did not change the coefficients of our continuous variables in multivariate regression. It did slightly change the p values of each variable, though did not change the order of significance for any of the variables.
+
+Our intercept value did change, which is to be expected with data transformations, and increased dramatically in significance. The new intercept value is probably the most useful piece of information that can be taken away from mean centering our data, because, rather than an intercept that tells you the expected value when percent black = 0 or median income = 0, the new intercept that is the expected population change value when all variables are equal to their mean value.
+  
   
 #### Scaling  
 
