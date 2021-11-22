@@ -614,6 +614,12 @@ export_summs(full_model_com, centered_model,
 
 
 ```
+Interpretation
+
+Mean centering our dataset did not change the coefficients of our continuous variables in multivariate regression. It did slightly change the p values of each variable, though did not change the order of significance for any of the variables.
+
+Our intercept value did change, which is to be expected with data transformations, and increased dramatically in significance. The new intercept value is probably the most useful piece of information that can be taken away from mean centering our data, because, rather than an intercept that tells you the expected value when percent black = 0 or median income = 0, the new intercept that is the expected population change value when all variables are equal to their mean value.
+
   
 #### Scaling  
 
@@ -651,7 +657,7 @@ export_summs(full_model_com, centered_model, centered_model_scaled,
              coefs = coeff_names_scaled)
 ```
 
-#### Scaling Interpretation
+Interpretation
 
 After mean scaling, we multiplied the percent population change by 100 to show percent change on a 0 to 100 scale rather than a 0 to 1 scale, which makes the coefficients more intuitive to understand. This also changed the p-values slightly, much like mean centering in the previous chunk did. 
 
