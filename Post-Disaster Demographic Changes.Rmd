@@ -600,10 +600,10 @@ centered_data <- full_acs %>%
   mutate(pct_black_pop_2011E = pct_black_pop_2011E - mean(pct_black_pop_2011E, na.rm=TRUE),
          pct_white_pop_2011E = pct_white_pop_2011E - mean(pct_white_pop_2011E, na.rm=TRUE),
          pct_asian_pop_2011E = pct_asian_pop_2011E - mean(pct_asian_pop_2011E, na.rm=TRUE),
-         pct_hispanic_pop_2011E = pct_hispanic_pop_2011E - mean(pct_hispanic_pop_2011E, na.rm=TRUE),
-         pct_renter_2011E = pct_renter_2011E - mean(pct_renter_2011E, na.rm=TRUE),
+        pct_hispanic_pop_2011E = pct_hispanic_pop_2011E - mean(pct_hispanic_pop_2011E, na.rm=TRUE),
+        pct_renter_2011E = pct_renter_2011E - mean(pct_renter_2011E, na.rm=TRUE),
          med_income_2011E = med_income_2011E - mean(med_income_2011E, na.rm=TRUE),
-         med_propvalue_2011E = med_propvalue_2011E - mean(med_propvalue_2011E, na.rm=TRUE))
+        med_propvalue_2011E = med_propvalue_2011E - mean(med_propvalue_2011E, na.rm=TRUE))
 
 centered_model <- lm(pct_pop_changeE ~ pct_black_pop_2011E + pct_white_pop_2011E + pct_asian_pop_2011E + pct_hispanic_pop_2011E + pct_renter_2011E + med_income_2011E + med_propvalue_2011E, centered_data)
 
@@ -615,38 +615,29 @@ export_summs(full_model_com, centered_model,
 
 ```
   
-Interpretation:
-
-Mean centering our dataset did not change the coefficients of our continuous variables in multivariate regression. It did slightly change the p values of each variable, though did not change the order of significance for any of the variables.
-
-Our intercept value did change, which is to be expected with data transformations, and increased dramatically in significance. The new intercept value is probably the most useful piece of information that can be taken away from mean centering our data, because, rather than an intercept that tells you the expected value when percent black = 0 or median income = 0, the new intercept that is the expected population change value when all variables are equal to their mean value.
-  
-  
 #### Scaling  
 
 
 ```{r scaling, message=FALSE}
 
 centered_data_scaled <- centered_data %>%
-  mutate(pct_pop_changeE = pct_pop_changeE * 100,
-         pct_black_pop_2011E_100 = pct_black_pop_2011E * 100,
-         pct_white_pop_2011E_100 = pct_white_pop_2011E * 100,
-        pct_asian_pop_2011E_100 =  pct_asian_pop_2011E * 100,
-         pct_hispanic_pop_2011E_100 = pct_hispanic_pop_2011E * 100,
-        pct_renter_2011E_100 = pct_renter_2011E * 100,
+  mutate(pct_pop_changeE_100 = pct_pop_changeE * 100,
+         
          log2_med_income_2011E = log(med_income_2011E + mean(full_acs$med_income_2011E, na.rm = TRUE), base = 2),
        log2_med_propvalue_2011E = log(med_propvalue_2011E + mean(full_acs$med_propvalue_2011E, na.rm = TRUE), base = 2))
 
                    
-centered_model_scaled <- lm(pct_pop_changeE ~ pct_black_pop_2011E_100 + pct_white_pop_2011E_100 + pct_asian_pop_2011E_100 + pct_hispanic_pop_2011E_100 +  pct_renter_2011E_100 + log2_med_income_2011E +  log2_med_propvalue_2011E, centered_data_scaled)
+centered_model_scaled <- lm(pct_pop_changeE_100 ~ pct_black_pop_2011E + pct_white_pop_2011E + pct_asian_pop_2011E + pct_hispanic_pop_2011E +  pct_renter_2011E + med_income_2011E + log2_med_income_2011E + med_propvalue_2011E + log2_med_propvalue_2011E, centered_data_scaled)
 
 coeff_names_scaled <- c("Constant" = "(Intercept)",
-                 "% Black" = "pct_black_pop_2011E_100",
-                 "% White" = "pct_white_pop_2011E_100",
-                 "% Asian" = "pct_asian_pop_2011E_100",
-                 "% Hispanic" = "pct_hispanic_pop_2011E_100",
-                 "% Renter" = "pct_renter_2011E_100",
+                 "% Black" = "pct_black_pop_2011E",
+                 "% White" = "pct_white_pop_2011E",
+                 "% Asian" = "pct_asian_pop_2011E",
+                 "% Hispanic" = "pct_hispanic_pop_2011E",
+                 "% Renter" = "pct_renter_2011E",
+                 "Median Income" = "med_income_2011E",
                  "Median Income log" = "log2_med_income_2011E",
+                 "Median Property Value" = "med_propvalue_2011E",
                 "Median Property Value log" = "log2_med_propvalue_2011E",
                 "Majority Vote Republican" = "majority_voteRepublican",
                 "Flooded Tract" = "floodedY") 
@@ -660,7 +651,11 @@ export_summs(full_model_com, centered_model, centered_model_scaled,
              coefs = coeff_names_scaled)
 ```
 
+#### Scaling Interpretation
 
+After mean scaling, we multiplied the percent population change by 100 to show percent change on a 0 to 100 scale rather than a 0 to 1 scale, which makes the coefficients more intuitive to understand. This also changed the p-values slightly, much like mean centering in the previous chunk did. 
+
+For median income and median property value, we tested log transformations. Doing so shows the effect of doubling median income and median property value (respectively) on percent population change. The log transformation did not lead to these variables becoming significant. 
 
 
 ### References  
