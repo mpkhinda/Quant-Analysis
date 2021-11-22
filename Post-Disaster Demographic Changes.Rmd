@@ -2,7 +2,11 @@
 title: "Post-Disaster Demographic Changes"
 author: "Matt Khinda, Jeb Polstein, Slide Kelly"
 date: "10/25/2021"
-output: html_document
+output: 
+  html_document:
+    toc: true
+    toc_depth: 5
+    toc_float: true
 ---
 
 ```{r setup, include=FALSE}
@@ -28,7 +32,7 @@ The sample population is people in all census tracts within the following counti
 
 Ocean (NJ), Monmouth (NJ), Middlesex (NJ), Union (NJ), Essex (NJ), Hudson (NJ), Bergen (NJ), Westchester (NY), Rockland (NY), Bronx (NY), New York (NY), Kings (NY), Queens (NY), Richmond (NY), Nassau (NY), Suffolk (NY), Fairfield (CT), New Haven (CT)
 
-## Load Data  
+### Load Data  
 ```{r load packages, results = 'hide', message=FALSE}
 library(tidyverse)
 library(tidycensus)
@@ -280,7 +284,7 @@ kable(head(full_acs))
 
 The dataset includes 4515 census tracts.
 
-### DESCRIPTIVE STATISTICS - CONTINUOUS
+### Descriptive Statistics - Continuous
 
 ```{r t test, results = 'hide', message=FALSE}
 pct_pop_change_t_test <- t.test(full_acs$pct_pop_changeE)
@@ -432,7 +436,7 @@ cont_summary <- tibble(
 
 kable(cont_summary, digits = 0)
 ```
-### DESCRIPTIVE STATISTICS - CATEGORICAL
+### Descriptive Statistics - Cagetgorical
 
 ```{r party table, message=FALSE}
 democrat_t_test <- t.test(full_acs$majority_vote == unique(full_acs$majority_vote)[1])
@@ -484,7 +488,7 @@ cor.test(~ pct_pop_changeE + med_propvalue_2011E, data = full_acs)
 
 ```
 
-### Correlation Interpretation
+#### Correlation Interpretation
 
 The correlation tests tell us that there is a significant relationship between percent population change and: percent white, percent Asian, percent renter, and median income. Increases in white population and median income are associated with a decrease in percent population change. Increases in Asian population and percent renter are associated with an increase in percent population change. There is not a significant relationship between percent population change and: percent Black, percent Hispanic, and median property value.
 
@@ -565,7 +569,7 @@ income_pop_plot + stat_smooth(
               geom = "smooth")
 ```
   
-### Visualization Interpreation
+#### Visualization Interpreation
 From these visualizations, specifically the one that was facet wrapped by county, we can see that there are significant outliers in positive change in population in New York County and Kings County (Manhattan and Brooklyn in New York City). We wanted to acknowledge that these may have a disproportionate influence on the correlations between overall demographics and overall population change. 
   
 ### Multivariate Regression
@@ -579,14 +583,16 @@ summary(full_model_com)
 ```
 
   
-### Multivariate Regression Interpretation  
+#### Multivariate Regression Interpretation  
 When all variables are estimated together in multivariate regression, we found that all continuous variables estimated in bivariate regression demonstrated a weaker correlation with population change then when estimated alone. Percent renter remained significantly correlated with population change, with each additional percent change in renter explaining 0.089% increase in population change.
 
 Both categorical variables show very minor but some significant correlation with population change. Whether a census tract was in a floodplain or not was significant at the 0.05 level and correlated with a 0.64% increase in population change.
 
 All together, our variables only explain 2.058% of variation in population change (1.856% adjusted). Reflecting on our data set, this could be explained by the heterogeneity of census tracts analyzed, because we may be comparing tracts in fast-growing (though perhaps flood-prone) neighborhoods in NYC with much slower growing, spatially distinct areas elsewhere in the metro region. To better understand the impact of spatial heterogeneity on our data, we hope to include analyses at the county-level for upcoming assignments.
 
-### Mean centering
+### Transformations
+
+#### Mean centering
 
 ```{r means centering, message=FALSE}
 
@@ -608,7 +614,8 @@ export_summs(full_model_com, centered_model,
 
 
 ```
-### Scaling
+  
+#### Scaling  
 
 
 ```{r scaling, message=FALSE}
