@@ -664,8 +664,38 @@ After mean scaling, we multiplied the percent population change by 100 to show p
 
 For median income and median property value, we tested log transformations. Doing so shows the effect of doubling median income and median property value (respectively) on percent population change. The log transformation did not lead to these variables becoming significant. 
 
+#### Interactions
 
+```{r interaction}
+coeff_names_interaction <- c("Constant" = "(Intercept)",
+                 "% Black" = "pct_black_pop_2011E",
+                 "% White" = "pct_white_pop_2011E",
+                 "% Asian" = "pct_asian_pop_2011E",
+                 "% Hispanic" = "pct_hispanic_pop_2011E",
+                 "% Renter" = "pct_renter_2011E",
+                 "Median Income" = "med_income_2011E",
+                 "Median Income log" = "log2_med_income_2011E",
+                 "Median Property Value" = "med_propvalue_2011E",
+                "Median Property Value log" = "log2_med_propvalue_2011E",
+                "Majority Vote Republican" = "majority_voteRepublican",
+                "Flooded Tract" = "floodedY") 
+                   
+                   
+interaction_model <- lm(pct_pop_changeE_100 ~ pct_black_pop_2011E + pct_white_pop_2011E + pct_asian_pop_2011E + pct_hispanic_pop_2011E +  pct_renter_2011E + med_income_2011E + log2_med_income_2011E + med_propvalue_2011E + log2_med_propvalue_2011E + pct_renter_2011E*flooded, centered_data_scaled)
 
+export_summs(centered_model_scaled, interaction_model,
+             error_format = "(p = {p.value})",
+             error_pos = "same",
+             model.names = c("Model 4",
+                             "Model 5"))
+```
+
+```{r interaction plot}
+interact_plot(interaction_model, pred = pct_renter_2011E, modx = flooded,
+              interval = TRUE) +
+  scale_x_continuous(name = "Percent Renter") +
+  scale_y_continuous(name = "Percent Population Change")
+```
 
 ### References  
 
