@@ -45,6 +45,7 @@ library(here)
 library(stringr)
 library(gridExtra)
 library(jtools)
+library(interactions)
 ```
 
 ```{r explore ACS data, include=FALSE}
@@ -662,6 +663,8 @@ Interpretation
 After mean scaling, we multiplied the percent population change by 100 to show percent change on a 0 to 100 scale rather than a 0 to 1 scale, which makes the coefficients more intuitive to understand. This also changed the p-values slightly, much like mean centering in the previous chunk did. 
 
 For median income and median property value, we tested log transformations. Doing so shows the effect of doubling median income and median property value (respectively) on percent population change. The log transformation did not lead to these variables becoming significant. 
+
+
 
 
 ### References  
