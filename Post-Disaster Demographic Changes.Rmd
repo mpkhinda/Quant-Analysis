@@ -664,7 +664,7 @@ After mean scaling, we multiplied the percent population change by 100 to show p
 
 For median income and median property value, we tested log transformations. Doing so shows the effect of doubling median income and median property value (respectively) on percent population change. The log transformation did not lead to these variables becoming significant. 
 
-#### Interactions
+### Interactions
 
 ```{r interaction}
 coeff_names_interaction <- c("Constant" = "(Intercept)",
