@@ -664,7 +664,7 @@ After mean scaling, we multiplied the percent population change by 100 to show p
 
 For median income and median property value, we tested log transformations. Doing so shows the effect of doubling median income and median property value (respectively) on percent population change. The log transformation did not lead to these variables becoming significant. 
 
-#### Interactions
+### Interactions
 
 ```{r interaction}
 coeff_names_interaction <- c("Constant" = "(Intercept)",
@@ -696,6 +696,14 @@ interact_plot(interaction_model, pred = pct_renter_2011E, modx = flooded,
   scale_x_continuous(name = "Percent Renter") +
   scale_y_continuous(name = "Percent Population Change")
 ```
+Interpretation
+
+Based on what we have seen in the multivariate models, we know that whether a tract was flooded (flooded = y) and percent renter both have significant, positive impacts on change in population. But does the relationship between percent renter and population change differ depending on whether a tract was flooded or not?
+
+By interacting whether a tract was flooded (flooded = y) with percent renter, we can see in our interaction plot that the relationship between percent renter and population change is stronger for tracts that were flooded vs those that were not. The R2 of the model did not change, so the model fit did not get any stronger, but the positive relationship between percent renter and population change in tracts that were flooded may be useful to know.
+
+**One note about our interaction plot - we are unsure why neither fit line estimated for population change values <0, which we know exist in our dataset. We feel confident about change in relationship demonstrated by the fit lines, and would be interested to know what, if any, error there is with our plot for future work.
+
 
 ### References  
 
