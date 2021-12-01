@@ -1,0 +1,56 @@
+---
+title: "Final Project"
+author: "Matt Khinda, Jeb Polstein, Slide Kelly"
+date: "12/1/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Introduction
+
+
+```{r intro}
+
+```
+
+### Background
+
+
+```{r background, echo=FALSE}
+
+```
+
+### Data
+
+```{r data, echo=FALSE}
+
+```
+
+
+### Methods
+
+```{r methods, echo=FALSE}
+
+```
+
+
+### Results
+
+```{r results, echo=FALSE}
+
+```
+
+
+### Discussion
+
+```{r discussion, echo=FALSE}
+
+```
+
+
+### Conclusion
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
