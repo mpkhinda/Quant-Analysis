@@ -571,8 +571,8 @@ asian_pop_plot + stat_smooth(
 ```
 
 ```{r bivariate plot income vs pop change, message=FALSE}
-income_pop_plot <- ggplot(full_acs, aes(med_income_2011E, pct_pop_changeE))+
-  geom_point() + ylim(-100, 100)+
+income_pop_plot <- ggplot(full_acs, aes(pct_renter_2011E, pct_pop_changeE))+
+  geom_point(size = 0.75) + ylim(-100, 100)+
   facet_wrap(vars(county))
   
   
